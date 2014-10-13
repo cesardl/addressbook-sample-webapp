@@ -1,0 +1,56 @@
+<f:view xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ice="http://www.icesoft.com/icefaces/component">
+
+    <ice:outputDeclaration doctypeRoot="HTML"
+                           doctypePublic="-//W3C//DTD XHTML 1.0 Transitional//EN"
+                           doctypeSystem="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"/>
+
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+            <ice:outputStyle href="./css/addressbook.css" />
+            <ice:outputStyle href="./theme/rime/rime.css" />
+            <ice:outputStyle href="./theme/rime/rime-portlet.css" />
+            <link type="image/x-icon" rel="icon" href="./images/favicon.ico" />
+            <title>Bienvenidos a la aplicacion</title>
+        </head>
+        <body>
+            <ice:form>
+                <ice:panelGroup style="margin:10% auto 0; width:390px;">
+                    <fieldset>
+                        <legend class="legendLogin">
+                            <ice:outputText value="Iniciar sesion" escape="false"/>
+                        </legend>
+                        <table width="80%" align="center">
+                            <tr>
+                                <td colspan="2">
+                                    <ice:panelGroup rendered="#{managerLogin.error}" styleClass="error">
+                                        <ice:graphicImage value="/images/caution.png" />
+                                        <ice:outputText value="Usuario y contraseña invalidos" styleClass="textError" />
+                                    </ice:panelGroup>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%"><ice:outputLabel value="Usuario:" styleClass="label"/></td>
+                                <td><ice:inputText value="#{managerLogin.usuario.usuUsuario}"
+                                               style="width:100%"/></td>
+                            </tr>
+                            <tr>
+                                <td><ice:outputLabel value="Password:" styleClass="label"/></td>
+                                <td><ice:inputSecret value="#{managerLogin.usuario.usuPassword}"
+                                                 style="width:100%"/></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" align="right">
+                                    <ice:commandButton value="Aceptar" style="width: 90px;"
+                                                       action="#{managerLogin.validarUsuario}"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </fieldset>
+                </ice:panelGroup>
+            </ice:form>
+        </body>
+    </html>
+</f:view>
