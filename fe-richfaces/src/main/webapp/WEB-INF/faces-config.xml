@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
+              version="1.2">
+    <managed-bean>
+        <managed-bean-name>managerAgenda</managed-bean-name>
+        <managed-bean-class>org.sanmarcux.manager.ManagerAgenda</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>managerLogin</managed-bean-name>
+        <managed-bean-class>org.sanmarcux.manager.ManagerLogin</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+
+    <navigation-rule>
+        <from-view-id>/Login/login.jsp</from-view-id>
+        <navigation-case>
+            <from-outcome>TO_LOGIN</from-outcome>
+            <to-view-id>/Login/login.jsp</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>TO_ADDRESSBOOK</from-outcome>
+            <to-view-id>/Contactos/listaContactos.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/Contactos/listaContactos.jsp</from-view-id>
+        <navigation-case>
+            <from-outcome>TO_FIND</from-outcome>
+            <to-view-id>/Contactos/buscaContacto.jsp</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>TO_EDIT</from-outcome>
+            <to-view-id>/Contactos/actualizarContacto.jsp</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>TO_LOGIN</from-outcome>
+            <to-view-id>/Login/login.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/Contactos/actualizarContacto.jsp</from-view-id>
+        <navigation-case>
+            <from-outcome>TO_ADDRESSBOOK</from-outcome>
+            <to-view-id>/Contactos/listaContactos.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/Contactos/buscaContacto.jsp</from-view-id>
+        <navigation-case>
+            <from-outcome>TO_ADDRESSBOOK</from-outcome>
+            <to-view-id>/Contactos/listaContactos.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <validator>
+        <validator-id>emailValidator</validator-id>
+        <validator-class>org.sanmarcux.util.EmailValidator</validator-class>
+    </validator>
+
+    <application>
+        <locale-config>
+            <default-locale>es</default-locale>
+            <supported-locale>en</supported-locale>
+        </locale-config>
+        <message-bundle>org.sanmarcux.util.mensajes</message-bundle>
+    </application>
+</faces-config>

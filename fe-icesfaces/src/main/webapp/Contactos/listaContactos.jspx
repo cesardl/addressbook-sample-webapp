@@ -1,0 +1,167 @@
+<f:view xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ice="http://www.icesoft.com/icefaces/component">
+
+    <ice:outputDeclaration doctypeRoot="HTML"
+                           doctypePublic="-//W3C//DTD XHTML 1.0 Transitional//EN"
+                           doctypeSystem="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"/>
+
+    <ice:outputHtml>
+        <ice:outputHead>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+            <ice:outputStyle href="./css/addressbook.css" />
+            <ice:outputStyle href="./theme/rime/rime.css" />
+            <ice:outputStyle href="./theme/rime/rime-portlet.css" />
+            <link type="image/x-icon" rel="icon" href="./images/favicon.ico" />
+            <title>Lista de contactos</title>
+        </ice:outputHead>
+        <ice:outputBody>
+            <table width="100%">
+                <tr>
+                    <td class="icePnlPopHdr">
+                        <ice:outputText  value="Lista de contactos" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <ice:form id="form_action">
+                            <table style="width: 100%">
+                                <tr>
+                                    <td align="left">
+                                        <strong>
+                                            <ice:outputText value="Bienvenido #{managerLogin.usuario.usuUsuario}"/>
+                                        </strong>
+                                    </td>
+                                    <td align="right">
+                                        <ice:panelGrid columns="5">
+                                            <ice:commandButton id="add" action="#{managerAgenda.nuevoContacto}"
+                                                               title="Añadir contacto"
+                                                               image="/images/new.png"/>
+
+                                            <ice:commandButton id="find" action="#{managerAgenda.buscaContacto}"
+                                                               title="Buscar contacto"
+                                                               image="/images/search.png"/>
+
+                                            <ice:commandButton id="print"
+                                                               title="Imprimir"
+                                                               image="/images/print.png"/>
+
+                                            <ice:commandButton id="help" actionListener="#{managerAgenda.showModalAcercaDe}"
+                                                               title="Ayuda sobre la aplicacion"
+                                                               image="/images/help.png"/>
+
+                                            <ice:commandButton id="closeSession"
+                                                               title="Cerrar sesion"
+                                                               image="/images/logout.png"
+                                                               action="#{managerLogin.cerrarSesion}"/>
+                                        </ice:panelGrid>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <hr />
+                                    </td>
+                                </tr>
+                            </table>
+                        </ice:form>
+                        <ice:form id="form_table">
+                            <ice:panelGroup effect="#{managerAgenda.valueChangeEffect}">
+                                <ice:dataTable id="tablaMaster" var="contacto" value="#{managerAgenda.lista}"
+                                               rows="20" cellpadding="0" width="90%" >
+
+                                    <f:param id="contactId" name="id" value="#{contacto.conId}" />
+
+                                    <ice:column style="width: 9%; text-align: center;">
+                                        <f:facet name="header">
+                                            <h:outputText value="Codigo" />
+                                        </f:facet>
+                                        <h:outputText value="#{contacto.conCodigo}" />
+                                    </ice:column>
+
+                                    <ice:column style="width: 30%;">
+                                        <f:facet name="header">
+                                            <h:outputText value="Nombres" />
+                                        </f:facet>
+                                        <h:outputText value="#{contacto.conNombres}" />
+                                    </ice:column>
+
+                                    <ice:column style="width: 10%; text-align: center;">
+                                        <f:facet name="header">
+                                            <h:outputText value="Telefono" />
+                                        </f:facet>
+                                        <h:outputText value="#{contacto.conTelefono}" />
+                                    </ice:column>
+
+                                    <ice:column style="width: 15%;">
+                                        <f:facet name="header">
+                                            <h:outputText value="E-mail" />
+                                        </f:facet>
+                                        <h:outputText value="#{contacto.conEmail}" />
+                                    </ice:column>
+
+                                    <ice:column style="width: 15%;">
+                                        <f:facet name="header">
+                                            <h:outputText value="Cumpleaños" escape="false"/>
+                                        </f:facet>
+                                        <h:outputText value="#{contacto.conCumpleanos}">
+                                            <f:convertDateTime pattern="dd 'de' MMMMMM 'del' yyyy"/>
+                                        </h:outputText>
+                                    </ice:column>
+
+                                    <ice:column style="width: 7%; text-align: center;">
+                                        <f:facet name="header">
+                                            <h:outputText value="Editar" />
+                                        </f:facet>
+                                        <ice:commandButton action="#{managerAgenda.editarContacto}" image="/images/edit.png"
+                                                           actionListener="#{managerAgenda.seleccionarContacto}" />
+                                    </ice:column>
+
+                                    <ice:column style="width: 7%; text-align: center;">
+                                        <f:facet name="header">
+                                            <h:outputText value="Eliminar" />
+                                        </f:facet>
+                                        <ice:commandButton image="/images/delete.png"
+                                                           actionListener="#{managerAgenda.eliminarContacto}" />
+                                    </ice:column>
+                                </ice:dataTable>
+                            </ice:panelGroup>
+
+                            <ice:panelPopup id="mpInfo"
+                                            draggable="true" modal="true"
+                                            visible="#{managerAgenda.show_acerca_de}"
+                                            autoCentre="true">
+                                <f:facet name="header">
+                                    <table width="100%">
+                                        <tr>
+                                            <td>
+                                                <ice:outputText value="Acerca del AddressBook"/>
+
+                                            </td>
+                                            <td align="right">
+                                                <ice:commandButton image="/images/close.png"
+                                                                   actionListener="#{managerAgenda.showModalAcercaDe}"
+                                                                   title="Close Popup" alt="Close"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </f:facet>
+                                <f:facet name="body">
+                                    <ice:panelGroup>
+                                        <center>
+                                            <ice:graphicImage styleClass="image" value="/images/mysql.png"
+                                                              width="200px" height="105px"/>
+                                            <ice:outputText value="#{managerAgenda.mensajeInfo}"
+                                                            escape="false"/>
+                                            <ice:graphicImage styleClass="image" value="/images/icefaces.jpg"
+                                                              width="226px" height="146px"/>
+                                        </center>
+                                    </ice:panelGroup>
+                                </f:facet>
+                            </ice:panelPopup>
+                        </ice:form>
+                    </td>
+                </tr>
+            </table>
+        </ice:outputBody>
+    </ice:outputHtml>
+</f:view>
