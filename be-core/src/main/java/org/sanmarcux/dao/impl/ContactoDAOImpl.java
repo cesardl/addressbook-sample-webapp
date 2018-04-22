@@ -1,26 +1,28 @@
 package org.sanmarcux.dao.impl;
 
-import java.sql.Blob;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import org.sanmarcux.bd.ConnectionPool;
 import org.sanmarcux.dao.ContactoDAO;
 import org.sanmarcux.domain.Contacto;
 import org.sanmarcux.util.Utilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class ContactoDAOImpl implements ContactoDAO {
 
-    @Override
+    private static final Logger LOG = LoggerFactory.getLogger(ContactoDAOImpl.class);
+
     public List<Contacto> listarContactos(int usuId) {
         String sql = "SELECT con_id, con_codigo, con_nombres, con_telefono, con_email, con_cumpleanos "
                 + "FROM contacto WHERE usu_id = " + usuId;
-        ArrayList<Contacto> listContacts = new ArrayList<Contacto>();
+
+        LOG.debug(sql);
+
+        ArrayList<Contacto> listContacts = new ArrayList<>();
         Connection connection = null;
 
         try {
@@ -47,11 +49,13 @@ public class ContactoDAOImpl implements ContactoDAO {
         return listContacts;
     }
 
-    @Override
     public List<Contacto> listarContactos(String dato, int usuId) {
-        ArrayList<Contacto> listContacts = new ArrayList<Contacto>();
+        ArrayList<Contacto> listContacts = new ArrayList<>();
         String sql = "SELECT con_id, con_codigo, con_nombres, con_telefono, con_email, con_cumpleanos"
                 + " FROM contacto WHERE usu_id = " + usuId + " AND con_nombres LIKE '%" + dato + "%'";
+
+        LOG.debug(sql);
+
         Connection connection = null;
 
         try {
@@ -77,10 +81,12 @@ public class ContactoDAOImpl implements ContactoDAO {
         return listContacts;
     }
 
-    @Override
     public Contacto seleccionarContacto(int idContacto) {
         String sql = "SELECT con_id, con_codigo, con_nombres, con_telefono,con_avatar, con_email, con_cumpleanos "
                 + "FROM contacto WHERE con_id = " + idContacto;
+
+        LOG.debug(sql);
+
         Contacto contacto = null;
         Connection connection = null;
 
@@ -110,9 +116,11 @@ public class ContactoDAOImpl implements ContactoDAO {
         return contacto;
     }
 
-    @Override
     public Blob seleccionarAvatarContacto(int idContacto) {
         String sql = "SELECT con_avatar FROM contacto WHERE con_id = " + idContacto;
+
+        LOG.debug(sql);
+
         Connection connection = null;
         Blob avatar = null;
         try {
@@ -124,17 +132,18 @@ public class ContactoDAOImpl implements ContactoDAO {
                 avatar = resultSet.getBlob("con_avatar");
             }
         } catch (SQLException sqle) {
-            System.err.println("Error en la consulta para buscar el avatar de un contacto"
-                    + "\nMensaje: " + sqle.getMessage() + "\nEstado SQL: " + sqle.getSQLState());
+            LOG.error("Error en la consulta para buscar el avatar de un contacto. Estado SQL: {}", sqle.getSQLState(), sqle);
         } finally {
             ConnectionPool.closeConnection(connection);
         }
         return avatar;
     }
 
-    @Override
     public String generarCodigoContacto() {
         String sql = "SELECT sp_genera_codigo()";
+
+        LOG.debug(sql);
+
         String codigo = "";
 
         Connection connection = null;
@@ -142,24 +151,25 @@ public class ContactoDAOImpl implements ContactoDAO {
             connection = ConnectionPool.openConnection();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
-            
+
             if (resultSet.next()) {
                 codigo = resultSet.getString(1);
             }
         } catch (SQLException sqle) {
-            System.err.println("Error en la consulta para buscar el avatar de un contacto"
-                    + "\nMensaje: " + sqle.getMessage() + "\nEstado SQL: " + sqle.getSQLState());
+            LOG.error("Error en la generación de código del contacto. Estado SQL: {}", sqle.getSQLState(), sqle);
         } finally {
             ConnectionPool.closeConnection(connection);
         }
         return codigo;
     }
 
-    @Override
     public void insertarContacto(Contacto contacto) {
         String sql = "INSERT INTO contacto(con_codigo, con_nombres, con_telefono,"
                 + " con_avatar, con_email, con_cumpleanos, usu_id)"
                 + " VALUES(?,?,?,?,?,?,?)";
+
+        LOG.debug(sql);
+
         Connection connection = null;
         try {
             connection = ConnectionPool.openConnection();
@@ -182,12 +192,13 @@ public class ContactoDAOImpl implements ContactoDAO {
         }
     }
 
-    @Override
     public void actualizarContacto(Contacto contacto) {
         String sql = "UPDATE contacto SET "
                 + "con_codigo = ?, con_nombres = ?, con_telefono = ?, "
                 + "con_avatar = ?, con_email = ?, con_cumpleanos = ? "
                 + "WHERE con_id = " + contacto.getConId();
+
+        LOG.debug(sql);
 
         Connection connection = null;
         try {
@@ -210,9 +221,11 @@ public class ContactoDAOImpl implements ContactoDAO {
         }
     }
 
-    @Override
     public void eliminarContacto(int idContacto) {
         String sql = "DELETE FROM contacto WHERE con_id = " + idContacto;
+
+        LOG.debug(sql);
+
         Connection connection = null;
 
         try {

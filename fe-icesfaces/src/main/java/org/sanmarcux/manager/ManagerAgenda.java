@@ -57,10 +57,10 @@ public class ManagerAgenda implements Serializable {
     public List<Contacto> getLista() {
         try {
             ContactoDAO cm = (ContactoDAO) Class.forName("org.sanmarcux.dao.impl.ContactoDAOImpl").newInstance();
-            lista = new ArrayList<Contacto>(cm.listarContactos(util.getUsuId()));
+            lista = new ArrayList<>(cm.listarContactos(util.getUsuId()));
         } catch (Exception ex) {
             System.err.println("Error al cargar la lista de contactos " + ex.getMessage());
-            lista = new ArrayList<Contacto>();
+            lista = new ArrayList<>();
         }
         return lista;
     }

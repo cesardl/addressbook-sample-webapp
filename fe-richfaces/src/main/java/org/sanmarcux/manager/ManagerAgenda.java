@@ -1,29 +1,30 @@
 package org.sanmarcux.manager;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import net.sf.jasperreports.engine.JRException;
+import org.richfaces.event.UploadEvent;
+import org.richfaces.model.UploadItem;
+import org.sanmarcux.dao.ContactoDAO;
+import org.sanmarcux.domain.Contacto;
+import org.sanmarcux.util.Utilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.faces.component.UIParameter;
+import javax.faces.event.ActionEvent;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import javax.sql.rowset.serial.SerialBlob;
+import java.io.*;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.faces.component.UIParameter;
-import javax.faces.event.ActionEvent;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-import javax.sql.rowset.serial.SerialBlob;
-import net.sf.jasperreports.engine.JRException;
-import org.richfaces.event.UploadEvent;
-import org.richfaces.model.UploadItem;
-import org.sanmarcux.domain.Contacto;
-import org.sanmarcux.dao.ContactoDAO;
-import org.sanmarcux.util.Utilities;
 
 public class ManagerAgenda {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ManagerAgenda.class);
 
     private List<Contacto> lista;
     private Contacto contacto;
@@ -59,9 +60,9 @@ public class ManagerAgenda {
         try {
             ContactoDAO cm = (ContactoDAO) Class.forName("org.sanmarcux.dao.impl.ContactoDAOImpl").newInstance();
             lista = cm.listarContactos(util.getUsuId());
-        } catch (Exception ex) {
-            System.err.println("Error al cargar la lista de contactos " + ex.getMessage());
-            lista = new ArrayList<Contacto>();
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
+            LOG.error("Error al cargar la lista de contactos", ex);
+            lista = new ArrayList<>();
         }
         return lista;
     }
@@ -263,7 +264,7 @@ public class ManagerAgenda {
 
     public List<Contacto> autocomplete(Object suggest) {
         String dato = String.valueOf(suggest);
-        List<Contacto> result = new ArrayList<Contacto>();
+        List<Contacto> result = new ArrayList<>();
         try {
             ContactoDAO dao = (ContactoDAO) Class.forName("org.sanmarcux.dao.impl.ContactoDAOImpl").newInstance();
             List<Contacto> lTmp = dao.listarContactos(dato, util.getUsuId());

@@ -33,7 +33,7 @@ USE address_book;
 
 CREATE TABLE IF NOT EXISTS `contacto` (
   `con_id` int(11) NOT NULL AUTO_INCREMENT,
-  `con_codigo` varchar(4) NOT NULL,
+  `con_codigo` varchar(5) NOT NULL,
   `con_nombres` varchar(250) NOT NULL,
   `con_telefono` varchar(9) DEFAULT NULL,
   `con_avatar` mediumblob,
@@ -123,7 +123,7 @@ declare generate, codigo  varchar(4);
 declare retorno varchar(4);
 
 repeat
-	set generate=substring(cast(rand() AS CHAR),3,5);
+	set generate=substring(cast(rand() AS CHAR),3,4);
 
 	select contacto.con_codigo into codigo from contacto
 	where contacto.con_codigo=generate;

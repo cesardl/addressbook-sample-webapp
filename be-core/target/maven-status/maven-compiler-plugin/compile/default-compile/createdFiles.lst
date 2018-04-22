@@ -1,9 +1,0 @@
-org\sanmarcux\dao\impl\UsuarioDAOImpl.class
-org\sanmarcux\util\EmailValidator.class
-org\sanmarcux\bd\ConnectionPool.class
-org\sanmarcux\domain\Contacto.class
-org\sanmarcux\dao\ContactoDAO.class
-org\sanmarcux\domain\Usuario.class
-org\sanmarcux\dao\UsuarioDAO.class
-org\sanmarcux\util\Utilities.class
-org\sanmarcux\dao\impl\ContactoDAOImpl.class

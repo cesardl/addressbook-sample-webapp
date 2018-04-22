@@ -9,7 +9,6 @@ import java.sql.Blob;
 import java.util.Date;
 
 /**
- * 
  * @author cesardl
  */
 public class Contacto implements Serializable {
@@ -36,7 +35,7 @@ public class Contacto implements Serializable {
     }
 
     public Contacto(int conId, String conCodigo, String conNombres,
-            String conTelefono, String conEmail, Date conCumpleanos) {
+                    String conTelefono, String conEmail, Date conCumpleanos) {
         this.conId = conId;
         this.conCodigo = conCodigo;
         this.conNombres = conNombres;
@@ -51,7 +50,7 @@ public class Contacto implements Serializable {
     }
 
     public Contacto(int conId, String conCodigo, String conNombres,
-            String conTelefono, Blob conAvatar, String conEmail, Date conCumpleanos) {
+                    String conTelefono, Blob conAvatar, String conEmail, Date conCumpleanos) {
         this.conId = conId;
         this.conCodigo = conCodigo;
         this.conNombres = conNombres;
