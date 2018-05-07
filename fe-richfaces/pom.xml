@@ -50,7 +50,6 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/../libs_richfaces/glassX-3.3.3.Final.jar</systemPath>
         </dependency>
-
     </dependencies>
 
     <build>
