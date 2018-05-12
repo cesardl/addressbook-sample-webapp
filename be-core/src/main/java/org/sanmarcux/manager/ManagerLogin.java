@@ -54,7 +54,7 @@ public class ManagerLogin {
                 ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
                 HttpSession session = (HttpSession) context.getSession(false);
                 session.setAttribute("usuario", user);
-                return "TO_ADDRESSBOOK";
+                return "TO_ADDRESS_BOOK";
             }
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
             this.setError(true);

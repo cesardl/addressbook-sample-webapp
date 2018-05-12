@@ -29,18 +29,22 @@ public class ConnectionPool {
         dataSource = basicDataSource;
     }
 
-    public static Connection openConnection() {
+    public static Connection openConnection() throws SQLException {
         try {
             return dataSource.getConnection();
         } catch (SQLException sqle) {
             LOG.error("Error al abrir la conexion", sqle);
-            return null;
+            throw sqle;
         }
     }
 
     public static void closeConnection(Connection connection) {
         try {
-            connection.close();
+            if (connection != null) {
+                connection.close();
+            } else {
+                LOG.warn("No hay una conexión abierta para cerrar");
+            }
         } catch (SQLException sqle) {
             LOG.error("Error al cerrar la conexion", sqle);
         }

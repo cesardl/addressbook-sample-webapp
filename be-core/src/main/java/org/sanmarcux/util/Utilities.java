@@ -4,11 +4,14 @@
  */
 package org.sanmarcux.util;
 
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.sanmarcux.bd.ConnectionPool;
 import org.sanmarcux.domain.Usuario;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -16,12 +19,15 @@ import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.Map;
 
 /**
  * @author cesardl
  */
 public class Utilities {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Utilities.class);
 
     public static final int ERROR = -1;
 
@@ -55,7 +61,7 @@ public class Utilities {
         int read = fin.read(fileContent);
         fin.close();
         if (read == -1) {
-            return null;
+            throw new IOException();
         } else {
             return fileContent;
         }
@@ -83,7 +89,7 @@ public class Utilities {
      * @param cadena
      * @return
      */
-    public static int lengthOfString(String cadena) {
+    public static int lengthOfString(final String cadena) {
         return cadena.trim().length();
     }
 
@@ -97,7 +103,7 @@ public class Utilities {
     /**
      * Metodo que devuelve el Id del usuario logeado
      *
-     * @return
+     * @return as user identifier
      */
     public int getUsuId() {
         try {
@@ -110,19 +116,19 @@ public class Utilities {
     }
 
     /**
-     * @param jasper_path
-     * @param parametros
-     * @return
+     * @param jasperPath path of the template
+     * @param parameters of the template
+     * @return an array of bytes with the report's data
      */
-    public byte[] getReportBytes(String jasper_path, Map parametros) {
+    public byte[] getReportBytes(String jasperPath, Map<?, ?> parameters) {
         try {
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
             FacesContext context = FacesContext.getCurrentInstance();
-            InputStream reportStream = context.getExternalContext().getResourceAsStream(jasper_path);
+            InputStream reportStream = context.getExternalContext().getResourceAsStream(jasperPath);
 
             Connection connection = ConnectionPool.openConnection();
-            JasperPrint jasperPrint = JasperFillManager.fillReport(reportStream, parametros, connection);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(reportStream, parameters, connection);
             JasperExportManager.exportReportToPdfStream(jasperPrint, buffer);
 
             ConnectionPool.closeConnection(connection);
@@ -131,7 +137,8 @@ public class Utilities {
             buffer.flush();
             buffer.close();
             return bytes;
-        } catch (Exception e) {
+        } catch (JRException | IOException | SQLException e) {
+            LOG.error(e.getMessage(), e);
             return null;
         }
     }

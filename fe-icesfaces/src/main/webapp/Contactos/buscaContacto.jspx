@@ -18,7 +18,7 @@
             <ice:outputText value="Form para buscar" />
             <ice:form>
                 <ice:commandButton title="Aceptar" image="/images/correct.png"
-                                   action="TO_ADDRESSBOOK" />
+                                   action="TO_ADDRESS_BOOK" />
             </ice:form>
         </body>
     </html>

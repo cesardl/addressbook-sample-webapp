@@ -76,7 +76,7 @@
                     </ice:form>
                     <ice:form id="fBack">
                         <div align="right">
-                            <ice:commandButton title="Regresar" action="TO_ADDRESSBOOK"
+                            <ice:commandButton title="Regresar" action="TO_ADDRESS_BOOK"
                                                image="/images/back.png"/>
                         </div>
                     </ice:form>

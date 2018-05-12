@@ -24,7 +24,7 @@
             <to-view-id>/Login/login.jspx</to-view-id>
         </navigation-case>
         <navigation-case>
-            <from-outcome>TO_ADDRESSBOOK</from-outcome>
+            <from-outcome>TO_ADDRESS_BOOK</from-outcome>
             <to-view-id>/Contactos/listaContactos.jspx</to-view-id>
         </navigation-case>
     </navigation-rule>
@@ -46,14 +46,14 @@
     <navigation-rule>
         <from-view-id>/Contactos/actualizarContacto.jspx</from-view-id>
         <navigation-case>
-            <from-outcome>TO_ADDRESSBOOK</from-outcome>
+            <from-outcome>TO_ADDRESS_BOOK</from-outcome>
             <to-view-id>/Contactos/listaContactos.jspx</to-view-id>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
         <from-view-id>/Contactos/buscaContacto.jspx</from-view-id>
         <navigation-case>
-            <from-outcome>TO_ADDRESSBOOK</from-outcome>
+            <from-outcome>TO_ADDRESS_BOOK</from-outcome>
             <to-view-id>/Contactos/listaContactos.jspx</to-view-id>
         </navigation-case>
     </navigation-rule>

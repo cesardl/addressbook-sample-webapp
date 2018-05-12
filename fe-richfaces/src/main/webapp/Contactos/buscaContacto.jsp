@@ -65,7 +65,7 @@
                                 </rich:suggestionbox>
                             </h:panelGroup>
                             <h:commandButton title="Aceptar" image="/images/correct.png"
-                                             action="TO_ADDRESSBOOK" />
+                                             action="TO_ADDRESS_BOOK" />
                         </h:panelGrid>
                         <rich:separator height="3px"/>
                         <h:panelGroup id="data" layout="block">

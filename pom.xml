@@ -11,6 +11,14 @@
     <name>Address Book</name>
     <description>Demo project for JSF</description>
 
+    <scm>
+        <url>https://github.com/cesardl/addressbook-sample-webapp</url>
+    </scm>
+    <issueManagement>
+        <system>Github</system>
+        <url>https://github.com/cesardl/addressbook-sample-webapp/issues</url>
+    </issueManagement>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

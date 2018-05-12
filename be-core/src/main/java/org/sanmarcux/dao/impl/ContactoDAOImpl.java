@@ -41,8 +41,7 @@ public class ContactoDAOImpl implements ContactoDAO {
                 listContacts.add(new Contacto(id, codigo, nombre, telefono, email, cumpleanos));
             }
         } catch (SQLException sqle) {
-            System.err.println("Error en la consulta para listar todos los contactos"
-                    + "\nMensaje: " + sqle.getMessage() + "\nEstado SQL: " + sqle.getSQLState());
+            LOG.error("Error en la consulta para listar todos los contactos: {}. Estado SQL:{}", sqle.getMessage(), sqle.getSQLState(), sqle);
         } finally {
             ConnectionPool.closeConnection(connection);
         }
@@ -73,7 +72,7 @@ public class ContactoDAOImpl implements ContactoDAO {
                 listContacts.add(new Contacto(id, codigo, nombre, telefono, email, cumpleanos));
             }
         } catch (SQLException sqle) {
-            System.err.println("Error en la consulta para buscar varios contactos por su nombre"
+            LOG.error("Error en la consulta para buscar varios contactos por su nombre"
                     + "\nMensaje: " + sqle.getMessage() + "\nEstado SQL: " + sqle.getSQLState());
         } finally {
             ConnectionPool.closeConnection(connection);
@@ -108,7 +107,7 @@ public class ContactoDAOImpl implements ContactoDAO {
             }
         } catch (SQLException sqle) {
             contacto = new Contacto();
-            System.err.println("Error en la consulta para buscar un contacto por Id"
+            LOG.error("Error en la consulta para buscar un contacto por Id"
                     + "\nMensaje: " + sqle.getMessage() + "\nEstado SQL: " + sqle.getSQLState());
         } finally {
             ConnectionPool.closeConnection(connection);
@@ -185,7 +184,7 @@ public class ContactoDAOImpl implements ContactoDAO {
 
             ps.executeUpdate();
         } catch (SQLException sqle) {
-            System.err.println("Error en la consulta para insertar un contacto"
+            LOG.error("Error en la consulta para insertar un contacto"
                     + "\nMensaje: " + sqle.getMessage() + "\nEstado SQL: " + sqle.getSQLState());
         } finally {
             ConnectionPool.closeConnection(connection);
@@ -214,7 +213,7 @@ public class ContactoDAOImpl implements ContactoDAO {
 
             ps.executeUpdate();
         } catch (SQLException sqle) {
-            System.err.println("Error en la consulta para actualizar un contacto"
+            LOG.error("Error en la consulta para actualizar un contacto"
                     + "\nMensaje: " + sqle.getMessage() + "\nEstado SQL: " + sqle.getSQLState());
         } finally {
             ConnectionPool.closeConnection(connection);
@@ -234,7 +233,7 @@ public class ContactoDAOImpl implements ContactoDAO {
 
             statement.executeUpdate(sql);
         } catch (SQLException sqle) {
-            System.err.println("Error en la consulta para eliminar un contacto"
+            LOG.error("Error en la consulta para eliminar un contacto"
                     + "\nMensaje: " + sqle.getMessage() + "\nEstado SQL: " + sqle.getSQLState());
         } finally {
             ConnectionPool.closeConnection(connection);

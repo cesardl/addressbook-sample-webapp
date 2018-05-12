@@ -1,4 +1,4 @@
-Address Book
+Address Book [![Build Status](https://travis-ci.org/cesardl/addressbook-sample-webapp.svg?branch=master)](https://travis-ci.org/cesardl/addressbook-sample-webapp) [![Maintainability](https://api.codeclimate.com/v1/badges/ad8b96409b766ee88044/maintainability)](https://codeclimate.com/github/cesardl/addressbook-sample-webapp/maintainability)
 ===========
 
 AddressBook es un proyecto de ejemplo que realicé allá por el año 2010. Utiliza JSF para la parte visual y consta de dos implementaciones

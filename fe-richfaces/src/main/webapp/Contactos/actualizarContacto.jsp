@@ -109,7 +109,7 @@
                     </a4j:form>
                     <a4j:form id="fBack">
                         <div align="right">
-                            <a4j:commandButton title="Regresar" action="TO_ADDRESSBOOK"
+                            <a4j:commandButton title="Regresar" action="TO_ADDRESS_BOOK"
                                                image="/images/back.png"/>
                         </div>
                     </a4j:form>

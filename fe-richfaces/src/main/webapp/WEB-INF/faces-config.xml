@@ -22,7 +22,7 @@
             <to-view-id>/Login/login.jsp</to-view-id>
         </navigation-case>
         <navigation-case>
-            <from-outcome>TO_ADDRESSBOOK</from-outcome>
+            <from-outcome>TO_ADDRESS_BOOK</from-outcome>
             <to-view-id>/Contactos/listaContactos.jsp</to-view-id>
         </navigation-case>
     </navigation-rule>
@@ -44,14 +44,14 @@
     <navigation-rule>
         <from-view-id>/Contactos/actualizarContacto.jsp</from-view-id>
         <navigation-case>
-            <from-outcome>TO_ADDRESSBOOK</from-outcome>
+            <from-outcome>TO_ADDRESS_BOOK</from-outcome>
             <to-view-id>/Contactos/listaContactos.jsp</to-view-id>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
         <from-view-id>/Contactos/buscaContacto.jsp</from-view-id>
         <navigation-case>
-            <from-outcome>TO_ADDRESSBOOK</from-outcome>
+            <from-outcome>TO_ADDRESS_BOOK</from-outcome>
             <to-view-id>/Contactos/listaContactos.jsp</to-view-id>
         </navigation-case>
     </navigation-rule>
