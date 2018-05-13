@@ -7,6 +7,10 @@ cache:
   directories:
   - $HOME/.m2
 
+addons:
+    apt:
+      update: true
+
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
@@ -16,15 +20,14 @@ script:
   - mvn clean verify
 
 after_script:
-  - echo 'Trying coverage for be-core module'
   - export JACOCO_SOURCE_PATH=be-core/src/main/java
-  - ./cc-test-reporter format-coverage target/site/jacoco/jacoco.xml --debug --input-type jacoco
-  - ./cc-test-reporter upload-coverage --debug
-  - echo 'Trying coverage for fe-icesfaces module'
+  - ./cc-test-reporter format-coverage be-core/target/site/jacoco/jacoco.xml --debug --input-type jacoco
+  - ./cc-test-reporter upload-coverage
+
   - export JACOCO_SOURCE_PATH=fe-icesfaces/src/main/java
-  - ./cc-test-reporter format-coverage target/site/jacoco/jacoco.xml --debug --input-type jacoco
-  - ./cc-test-reporter upload-coverage --debug
-  - echo 'Trying coverage for fe-richfaces module'
+  - ./cc-test-reporter format-coverage fe-icesfaces/target/site/jacoco/jacoco.xml --debug --input-type jacoco
+  - ./cc-test-reporter upload-coverage
+
   - export JACOCO_SOURCE_PATH=fe-richfaces/src/main/java
-  - ./cc-test-reporter format-coverage target/site/jacoco/jacoco.xml --debug --input-type jacoco
-  - ./cc-test-reporter upload-coverage --debug
+  - ./cc-test-reporter format-coverage fe-richfaces/target/site/jacoco/jacoco.xml --debug --input-type jacoco
+  - ./cc-test-reporter upload-coverage

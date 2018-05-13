@@ -38,15 +38,15 @@ public class ConnectionPool {
         }
     }
 
-    public static void closeConnection(Connection connection) {
+    public static void closeQuietly(Connection connection) {
         try {
             if (connection != null) {
                 connection.close();
             } else {
                 LOG.warn("No hay una conexión abierta para cerrar");
             }
-        } catch (SQLException sqle) {
-            LOG.error("Error al cerrar la conexion", sqle);
+        } catch (SQLException e) {
+            LOG.error("Error al cerrar la conexion", e);
         }
     }
 }

@@ -29,20 +29,18 @@ public class Utilities {
 
     private static final Logger LOG = LoggerFactory.getLogger(Utilities.class);
 
-    public static final int ERROR = -1;
-
     /**
      * Metodo que devuelve un java.sql.Date
      * a partir de un java.util.Date
      *
-     * @param date
-     * @return
+     * @param date current date
+     * @return date in sql instance
      */
     public static Date fromUtilDateToSQLDate(java.util.Date date) {
-        if (date instanceof java.util.Date) {
-            return new Date(date.getTime());
-        } else {
+        if (date == null) {
             return null;
+        } else {
+            return new Date(date.getTime());
         }
     }
 
@@ -50,11 +48,11 @@ public class Utilities {
      * Metodo que devuelve un arreglo de bytes
      * a partir de una java.io.File
      *
-     * @param file
-     * @return
-     * @throws IOException
+     * @param file the desired file
+     * @return an array of bytes
+     * @throws IOException if can not read file
      */
-    public static byte[] fromFiletoByteArray(File file) throws IOException {
+    public static byte[] fromFileToByteArray(final File file) throws IOException {
         FileInputStream fin = new FileInputStream(file);
 
         byte fileContent[] = new byte[(int) file.length()];
@@ -68,18 +66,13 @@ public class Utilities {
     }
 
     /**
-     * Metodo que devuelve un numero de tipo Int
-     * a partir de un String
+     * Metodo que devuelve un numero de tipo Int a partir de un String
      *
-     * @param cadena
-     * @return
+     * @param o the object to convert
+     * @return parsed value
      */
-    public static int toInteger(String cadena) {
-        try {
-            return Integer.parseInt(cadena);
-        } catch (NumberFormatException nfe) {
-            return ERROR;
-        }
+    public static int toInteger(Object o) {
+        return Integer.parseInt(String.valueOf(o));
     }
 
     /**
@@ -131,7 +124,7 @@ public class Utilities {
             JasperPrint jasperPrint = JasperFillManager.fillReport(reportStream, parameters, connection);
             JasperExportManager.exportReportToPdfStream(jasperPrint, buffer);
 
-            ConnectionPool.closeConnection(connection);
+            ConnectionPool.closeQuietly(connection);
 
             byte[] bytes = buffer.toByteArray();
             buffer.flush();

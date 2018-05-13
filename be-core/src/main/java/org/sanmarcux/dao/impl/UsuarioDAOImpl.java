@@ -46,7 +46,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         } catch (SQLException sqle) {
             LOG.error("Error en la consulta para buscar un usuario. Estado SQL: {}", sqle.getSQLState(), sqle);
         } finally {
-            ConnectionPool.closeConnection(connection);
+            ConnectionPool.closeQuietly(connection);
         }
         return user;
     }

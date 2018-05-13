@@ -2,13 +2,10 @@ package org.sanmarcux.manager;
 
 import com.icesoft.faces.context.effects.Effect;
 import com.icesoft.faces.context.effects.Highlight;
-import org.sanmarcux.dao.ContactoDAO;
 import org.sanmarcux.manager.base.AbstractManagerAgenda;
-import org.sanmarcux.util.Utilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.faces.component.UIParameter;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 
@@ -18,7 +15,7 @@ public class ManagerAgenda extends AbstractManagerAgenda {
 
     private Effect valueChangeEffect;
     /*Para los ventanas modales*/
-    private boolean show_acerca_de = false;
+    private boolean showModalAcercaDe;
 
     public ManagerAgenda() {
         super();
@@ -26,8 +23,12 @@ public class ManagerAgenda extends AbstractManagerAgenda {
         this.valueChangeEffect.setFired(true);
     }
 
-    public boolean isShow_acerca_de() {
-        return show_acerca_de;
+    public boolean isShowModalAcercaDe() {
+        return showModalAcercaDe;
+    }
+
+    public void setShowModalAcercaDe(boolean showModalAcercaDe) {
+        this.showModalAcercaDe = showModalAcercaDe;
     }
 
     public Effect getValueChangeEffect() {
@@ -48,16 +49,8 @@ public class ManagerAgenda extends AbstractManagerAgenda {
                 + "generaci&oacute;n dereportes con <i>JasperReports</i></h3>";
     }
 
-    public void eliminarContacto(ActionEvent event) {
-        LOG.debug("Entra a eliminar el contacto");
-        try {
-            UIParameter parameter = (UIParameter) event.getComponent().findComponent("contactId");
-            int id = Utilities.toInteger(String.valueOf(parameter.getValue()));
-            ContactoDAO dao = (ContactoDAO) Class.forName("org.sanmarcux.dao.impl.ContactoDAOImpl").newInstance();
-            dao.eliminarContacto(id);
-            valueChangeEffect.setFired(false);
-        } catch (Exception e) {
-            LOG.error("Error al llamar al metodo eliminarContacto {}", e.getMessage(), e);
-        }
+    public void eliminarContacto(ActionEvent event) throws IllegalAccessException, ClassNotFoundException, InstantiationException {
+        super.eliminarContacto(event);
+        valueChangeEffect.setFired(false);
     }
 }

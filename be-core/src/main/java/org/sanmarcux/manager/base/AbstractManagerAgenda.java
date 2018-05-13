@@ -43,7 +43,7 @@ public abstract class AbstractManagerAgenda {
     protected Utilities util;
 
     public AbstractManagerAgenda() {
-        LOG.info("Constructor");
+        LOG.debug("Constructor");
         this.contacto = new Contacto();
         util = new Utilities();
         this.editar = 0;
@@ -60,6 +60,7 @@ public abstract class AbstractManagerAgenda {
     public List<Contacto> getLista() {
         int userId = util.getUsuId();
         LOG.info("Obteniendo lista de contactos del usuario {}", userId);
+
         try {
             ContactoDAO cm = (ContactoDAO) Class.forName("org.sanmarcux.dao.impl.ContactoDAOImpl").newInstance();
             lista = cm.listarContactos(userId);
@@ -67,6 +68,8 @@ public abstract class AbstractManagerAgenda {
             LOG.error("Error al cargar la lista de contactos", ex);
             lista = new ArrayList<>();
         }
+
+        LOG.info("Se obtuvieron {} contactos del usuario {}", lista.size(), userId);
         return lista;
     }
 
@@ -220,7 +223,9 @@ public abstract class AbstractManagerAgenda {
         if (this.contacto != null) {
             if (Utilities.lengthOfString(this.contacto.getConNombres()) == 0) {
                 return false;
-            } else return Utilities.lengthOfString(this.contacto.getConCodigo()) <= 4;
+            } else {
+                return Utilities.lengthOfString(this.contacto.getConCodigo()) <= 4;
+            }
         }
         return true;
     }
@@ -240,7 +245,7 @@ public abstract class AbstractManagerAgenda {
 
     public void seleccionarContacto(ActionEvent actionEvent) {
         UIParameter component = (UIParameter) actionEvent.getComponent().findComponent("contactId");
-        this.editar = Utilities.toInteger(String.valueOf(component.getValue()));
+        this.editar = Utilities.toInteger(component.getValue());
 
         try {
             ContactoDAO cm = (ContactoDAO) Class.forName("org.sanmarcux.dao.impl.ContactoDAOImpl").newInstance();
@@ -248,7 +253,7 @@ public abstract class AbstractManagerAgenda {
             if (Utilities.lengthOfString(this.getContacto().getConCodigo()) < 4) {
                 this.getContacto().setConCodigo(cm.generarCodigoContacto());
             }
-        } catch (Exception e) {
+        } catch (IllegalAccessException | ClassNotFoundException | InstantiationException e) {
             LOG.error("Error al llamar al metodo seleccionarContacto {}", e.getMessage(), e);
             this.setContacto(new Contacto());
         }
@@ -278,10 +283,23 @@ public abstract class AbstractManagerAgenda {
         }
     }
 
+    public void eliminarContacto(ActionEvent event) throws IllegalAccessException, ClassNotFoundException, InstantiationException {
+        LOG.debug("Entra a eliminar el contacto");
+        try {
+            UIParameter parameter = (UIParameter) event.getComponent().findComponent("contactId");
+            int id = Utilities.toInteger(parameter.getValue());
+            ContactoDAO dao = (ContactoDAO) Class.forName("org.sanmarcux.dao.impl.ContactoDAOImpl").newInstance();
+            dao.eliminarContacto(id);
+        } catch (IllegalAccessException | ClassNotFoundException | InstantiationException e) {
+            LOG.error("Error al llamar al metodo eliminarContacto {}", e.getMessage(), e);
+            throw e;
+        }
+    }
+
     public void loadAvatar(ActionEvent event) {
         try {
             UIParameter parameter = (UIParameter) event.getComponent().findComponent("sugContactId");
-            int id = Utilities.toInteger(String.valueOf(parameter.getValue()));
+            int id = Utilities.toInteger(parameter.getValue());
             ContactoDAO dao = (ContactoDAO) Class.forName("org.sanmarcux.dao.impl.ContactoDAOImpl").newInstance();
             this.setSug_avatar(dao.seleccionarAvatarContacto(id));
         } catch (IllegalAccessException | ClassNotFoundException | InstantiationException e) {
@@ -290,17 +308,21 @@ public abstract class AbstractManagerAgenda {
     }
 
 
-    public void avatarContacto(OutputStream stream, Object data) throws IOException, SQLException {
-        if (data.equals("vAvatar")) {
+    public void avatarContacto(final OutputStream stream, final Object data) throws IOException, SQLException {
+        if ("vAvatar".equals(data)) {
+            LOG.debug("Mostrando imágen del contacto al editar");
             if (contacto.getConAvatar() != null) {
                 int length = (int) contacto.getConAvatar().length();
                 stream.write(contacto.getConAvatar().getBytes(1, length));
             }
-        } else if (data.equals("sugAvatar")) {
+        } else if ("sugAvatar".equals(data)) {
+            LOG.debug("Mostrando imágen del contacto al buscar");
             if (this.sug_avatar != null) {
                 int length = (int) sug_avatar.length();
                 stream.write(sug_avatar.getBytes(1, length));
             }
+        } else {
+            throw new UnsupportedOperationException();
         }
     }
 }

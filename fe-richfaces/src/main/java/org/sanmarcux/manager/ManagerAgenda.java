@@ -2,7 +2,6 @@ package org.sanmarcux.manager;
 
 import org.richfaces.event.UploadEvent;
 import org.richfaces.model.UploadItem;
-import org.sanmarcux.dao.ContactoDAO;
 import org.sanmarcux.manager.base.AbstractManagerAgenda;
 import org.sanmarcux.util.Utilities;
 import org.slf4j.Logger;
@@ -33,7 +32,7 @@ public class ManagerAgenda extends AbstractManagerAgenda {
             this.setB_mime(item.getContentType());
             this.setB_file_name(item.getFileName());
             File file = item.getFile();
-            contacto.setConAvatar(new SerialBlob(Utilities.fromFiletoByteArray(file)));
+            contacto.setConAvatar(new SerialBlob(Utilities.fromFileToByteArray(file)));
             boolean deleted = file.delete();
 
             if (deleted) {
@@ -46,28 +45,16 @@ public class ManagerAgenda extends AbstractManagerAgenda {
         }
     }
 
-    public void eliminarContacto(ActionEvent event) {
-        LOG.debug("Entra a eliminar el contacto");
-        try {
-            UIParameter parameter = (UIParameter) event.getComponent().findComponent("contactId");
-            int id = Utilities.toInteger(String.valueOf(parameter.getValue()));
-            ContactoDAO dao = (ContactoDAO) Class.forName("org.sanmarcux.dao.impl.ContactoDAOImpl").newInstance();
-            dao.eliminarContacto(id);
-        } catch (Exception e) {
-            LOG.error("Error al llamar al metodo eliminarContacto {}", e.getMessage(), e);
-        }
-    }
-
     public void verContacto(ActionEvent event) throws IOException {
         UIParameter parameter = (UIParameter) event.getComponent().findComponent("contactId");
-        int contactId = Utilities.toInteger(String.valueOf(parameter.getValue()));
+        int contactId = Utilities.toInteger(parameter.getValue());
 
-        String jasper_path = "/reportes/report_contact_by_id.jasper";
+        String jasperPath = "/reportes/report_contact_by_id.jasper";
 
         Map<String, Integer> parameters = new HashMap<>();
         parameters.put("CON_ID", contactId);
 
-        InputStream input = new ByteArrayInputStream(util.getReportBytes(jasper_path, parameters));
+        InputStream input = new ByteArrayInputStream(util.getReportBytes(jasperPath, parameters));
 
         int size = input.available();
         byte[] pdf = new byte[size];
