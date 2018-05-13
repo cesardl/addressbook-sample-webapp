@@ -4,8 +4,9 @@
  */
 package org.sanmarcux.domain;
 
+import org.sanmarcux.util.Utilities;
+
 import java.io.Serializable;
-import java.util.Collection;
 
 /**
  * @author cesardl
@@ -17,15 +18,6 @@ public class Usuario implements Serializable {
     private int usuId;
     private String usuUsuario;
     private String usuPassword;
-    private Collection<Contacto> contactos;
-
-    public Usuario() {
-    }
-
-    public Usuario(String usuUsuario, String usuPassword) {
-        this.usuUsuario = usuUsuario;
-        this.usuPassword = usuPassword;
-    }
 
     public int getUsuId() {
         return usuId;
@@ -40,7 +32,7 @@ public class Usuario implements Serializable {
     }
 
     public void setUsuPassword(String usuPassword) {
-        this.usuPassword = usuPassword;
+        this.usuPassword = Utilities.buildMySQLPassword(usuPassword);
     }
 
     public String getUsuUsuario() {
@@ -49,13 +41,5 @@ public class Usuario implements Serializable {
 
     public void setUsuUsuario(String usuUsuario) {
         this.usuUsuario = usuUsuario;
-    }
-
-    public Collection<Contacto> getContactos() {
-        return contactos;
-    }
-
-    public void setContactos(Collection<Contacto> contactos) {
-        this.contactos = contactos;
     }
 }

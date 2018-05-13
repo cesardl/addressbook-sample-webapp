@@ -27,7 +27,7 @@
                                 <td colspan="2">
                                     <ice:panelGroup rendered="#{managerLogin.error}" styleClass="error">
                                         <ice:graphicImage value="/images/caution.png" />
-                                        <ice:outputText value="Usuario y contraseña invalidos" styleClass="textError" />
+                                        <ice:outputText value="Usuario y contrase&ntilde;a invalidos" styleClass="textError" />
                                     </ice:panelGroup>
                                 </td>
                             </tr>

@@ -35,7 +35,7 @@
                                     <td align="right">
                                         <ice:panelGrid columns="5">
                                             <ice:commandButton id="add" action="#{managerAgenda.nuevoContacto}"
-                                                               title="Añadir contacto"
+                                                               title="A&ntilde;adir contacto"
                                                                image="/images/new.png"/>
 
                                             <ice:commandButton id="find" action="#{managerAgenda.buscaContacto}"
@@ -101,7 +101,7 @@
 
                                     <ice:column style="width: 15%;">
                                         <f:facet name="header">
-                                            <h:outputText value="Cumpleaños" escape="false"/>
+                                            <h:outputText value="Cumplea&ntilde;os" escape="false"/>
                                         </f:facet>
                                         <h:outputText value="#{contacto.conCumpleanos}">
                                             <f:convertDateTime pattern="dd 'de' MMMMMM 'del' yyyy"/>

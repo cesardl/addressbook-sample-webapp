@@ -172,10 +172,7 @@ public class ContactoDAOImpl implements ContactoDAO {
     }
 
     public void actualizarContacto(final Contacto contacto) {
-        String sql = "UPDATE contacto SET "
-                + "con_codigo = ?, con_nombres = ?, con_telefono = ?, "
-                + "con_avatar = ?, con_email = ?, con_cumpleanos = ? "
-                + "WHERE con_id = ?";
+        String sql = "UPDATE contacto SET con_codigo = ?, con_nombres = ?, con_telefono = ?, con_avatar = ?, con_email = ?, con_cumpleanos = ? WHERE con_id = ?";
 
         LOG.debug(sql);
 
@@ -214,7 +211,7 @@ public class ContactoDAOImpl implements ContactoDAO {
 
             int result = ps.executeUpdate();
 
-            LOG.debug("Total de registros afectados {}", result);
+            LOG.debug("Total de registros afectados: {}", result);
         } catch (SQLException e) {
             LOG.error("Error en la consulta para eliminar un contacto: {}. Estado SQL:{}", e.getMessage(), e.getSQLState(), e);
         }

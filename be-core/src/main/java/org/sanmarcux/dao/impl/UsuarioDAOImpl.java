@@ -22,10 +22,10 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     private static final Logger LOG = LoggerFactory.getLogger(UsuarioDAOImpl.class);
 
-    public Usuario getUsuario(Usuario usuario) {
-
+    public Usuario getUsuario(final Usuario usuario) {
         Usuario user = null;
         Connection connection = null;
+
         try {
             String sql = "SELECT usu_id, usu_usuario, usu_password"
                     + " FROM usuario WHERE usu_usuario = '" + usuario.getUsuUsuario() + "'"
@@ -48,6 +48,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         } finally {
             ConnectionPool.closeQuietly(connection);
         }
+
         return user;
     }
 }

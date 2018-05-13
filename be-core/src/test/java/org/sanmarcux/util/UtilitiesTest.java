@@ -24,4 +24,11 @@ public class UtilitiesTest {
         assertNull(Utilities.fromUtilDateToSQLDate(null));
     }
 
+    @Test
+    public void buildMySQLPasswordTest() {
+        String result = Utilities.buildMySQLPassword("123456");
+
+        assertNotNull(result);
+        assertEquals("*6BB4837EB74329105EE4568DDA7DC67ED2CA2AD9", result);
+    }
 }

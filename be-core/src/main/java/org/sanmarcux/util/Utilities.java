@@ -8,6 +8,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.sanmarcux.bd.ConnectionPool;
 import org.sanmarcux.domain.Usuario;
 import org.slf4j.Logger;
@@ -71,7 +72,7 @@ public class Utilities {
      * @param o the object to convert
      * @return parsed value
      */
-    public static int toInteger(Object o) {
+    public static int toInteger(final Object o) {
         return Integer.parseInt(String.valueOf(o));
     }
 
@@ -79,33 +80,30 @@ public class Utilities {
      * Metodo que devuelve la longitud de una
      * cadena limpia
      *
-     * @param cadena
-     * @return
+     * @param cadena cadena a evaluar
+     * @return el total de caracteres
      */
     public static int lengthOfString(final String cadena) {
         return cadena.trim().length();
     }
 
     /**
-     * @return
-     */
-    public static FacesContext getFacesContext() {
-        return FacesContext.getCurrentInstance();
-    }
-
-    /**
-     * Metodo que devuelve el Id del usuario logeado
+     * Metodo que devuelve el Id del usuario logeado.
      *
      * @return as user identifier
      */
     public int getUsuId() {
-        try {
-            ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-            HttpSession session = (HttpSession) context.getSession(true);
-            return ((Usuario) session.getAttribute("usuario")).getUsuId();
-        } catch (Exception e) {
+        ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+        HttpSession session = (HttpSession) context.getSession(true);
+        Object attribute = session.getAttribute("usuario");
+
+        if (attribute == null) {
+            LOG.warn("No se encontró algún usuario logueado");
             return 0;
         }
+
+        LOG.info("Obteniedo identificador de usuario");
+        return ((Usuario) attribute).getUsuId();
     }
 
     /**
@@ -114,23 +112,34 @@ public class Utilities {
      * @return an array of bytes with the report's data
      */
     public byte[] getReportBytes(String jasperPath, Map<?, ?> parameters) {
+        Connection connection = null;
         try {
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
             FacesContext context = FacesContext.getCurrentInstance();
             InputStream reportStream = context.getExternalContext().getResourceAsStream(jasperPath);
 
-            Connection connection = ConnectionPool.openConnection();
+            connection = ConnectionPool.openConnection();
             JasperPrint jasperPrint = JasperFillManager.fillReport(reportStream, parameters, connection);
             JasperExportManager.exportReportToPdfStream(jasperPrint, buffer);
-
-            ConnectionPool.closeQuietly(connection);
 
             byte[] bytes = buffer.toByteArray();
             buffer.flush();
             buffer.close();
             return bytes;
         } catch (JRException | IOException | SQLException e) {
+            LOG.error(e.getMessage(), e);
+            return null;
+        } finally {
+            ConnectionPool.closeQuietly(connection);
+        }
+    }
+
+    public static String buildMySQLPassword(final String plainText) {
+        try {
+            byte[] utf8 = plainText.getBytes("UTF-8");
+            return "*" + DigestUtils.sha1Hex(DigestUtils.sha1(utf8)).toUpperCase();
+        } catch (UnsupportedEncodingException e) {
             LOG.error(e.getMessage(), e);
             return null;
         }

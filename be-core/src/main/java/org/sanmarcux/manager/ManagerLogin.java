@@ -6,6 +6,7 @@ package org.sanmarcux.manager;
 
 import org.sanmarcux.dao.UsuarioDAO;
 import org.sanmarcux.domain.Usuario;
+import org.sanmarcux.util.Utilities;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -16,6 +17,8 @@ import java.util.Enumeration;
  * @author cesardl
  */
 public class ManagerLogin {
+
+    private static final String NAVIGATION_TO_LOGIN = "TO_LOGIN";
 
     private Usuario usuario;
     private boolean error;
@@ -49,7 +52,7 @@ public class ManagerLogin {
             Usuario user = dao.getUsuario(this.usuario);
             if (user == null) {
                 this.setError(true);
-                return "TO_LOGIN";
+                return NAVIGATION_TO_LOGIN;
             } else {
                 ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
                 HttpSession session = (HttpSession) context.getSession(false);
@@ -58,7 +61,7 @@ public class ManagerLogin {
             }
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
             this.setError(true);
-            return "TO_LOGIN";
+            return NAVIGATION_TO_LOGIN;
         }
     }
 
