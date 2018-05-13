@@ -60,6 +60,7 @@ public abstract class AbstractManagerAgenda {
     public List<Contacto> getLista() {
         int userId = util.getUsuId();
         LOG.info("Obteniendo lista de contactos del usuario {}", userId);
+
         try {
             ContactoDAO cm = (ContactoDAO) Class.forName("org.sanmarcux.dao.impl.ContactoDAOImpl").newInstance();
             lista = cm.listarContactos(userId);
@@ -67,6 +68,8 @@ public abstract class AbstractManagerAgenda {
             LOG.error("Error al cargar la lista de contactos", ex);
             lista = new ArrayList<>();
         }
+
+        LOG.info("Se obtuvieron {} contactos del usuario {}", lista.size(), userId);
         return lista;
     }
 

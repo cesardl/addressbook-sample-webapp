@@ -45,8 +45,8 @@ public class ConnectionPool {
             } else {
                 LOG.warn("No hay una conexión abierta para cerrar");
             }
-        } catch (SQLException sqle) {
-            LOG.error("Error al cerrar la conexion", sqle);
+        } catch (SQLException e) {
+            LOG.error("Error al cerrar la conexion", e);
         }
     }
 }

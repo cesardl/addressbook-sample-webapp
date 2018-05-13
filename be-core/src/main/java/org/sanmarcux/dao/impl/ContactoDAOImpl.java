@@ -40,8 +40,8 @@ public class ContactoDAOImpl implements ContactoDAO {
 
                 listContacts.add(new Contacto(id, codigo, nombre, telefono, email, cumpleanos));
             }
-        } catch (SQLException sqle) {
-            LOG.error("Error en la consulta para listar todos los contactos: {}. Estado SQL:{}", sqle.getMessage(), sqle.getSQLState(), sqle);
+        } catch (SQLException e) {
+            LOG.error("Error en la consulta para listar todos los contactos: {}. Estado SQL:{}", e.getMessage(), e.getSQLState(), e);
         } finally {
             ConnectionPool.closeConnection(connection);
         }
@@ -71,9 +71,8 @@ public class ContactoDAOImpl implements ContactoDAO {
 
                 listContacts.add(new Contacto(id, codigo, nombre, telefono, email, cumpleanos));
             }
-        } catch (SQLException sqle) {
-            LOG.error("Error en la consulta para buscar varios contactos por su nombre"
-                    + "\nMensaje: " + sqle.getMessage() + "\nEstado SQL: " + sqle.getSQLState());
+        } catch (SQLException e) {
+            LOG.error("Error en la consulta para buscar varios contactos por su nombre: {}. Estado SQL:{}", e.getMessage(), e.getSQLState(), e);
         } finally {
             ConnectionPool.closeConnection(connection);
         }
@@ -105,10 +104,9 @@ public class ContactoDAOImpl implements ContactoDAO {
 
                 contacto = new Contacto(id, codigo, nombre, telefono, avatar, email, cumpleanos);
             }
-        } catch (SQLException sqle) {
+        } catch (SQLException e) {
             contacto = new Contacto();
-            LOG.error("Error en la consulta para buscar un contacto por Id"
-                    + "\nMensaje: " + sqle.getMessage() + "\nEstado SQL: " + sqle.getSQLState());
+            LOG.error("Error en la consulta para buscar un contacto por Id: {}. Estado SQL:{}", e.getMessage(), e.getSQLState(), e);
         } finally {
             ConnectionPool.closeConnection(connection);
         }
@@ -130,8 +128,8 @@ public class ContactoDAOImpl implements ContactoDAO {
             if (resultSet.next()) {
                 avatar = resultSet.getBlob("con_avatar");
             }
-        } catch (SQLException sqle) {
-            LOG.error("Error en la consulta para buscar el avatar de un contacto. Estado SQL: {}", sqle.getSQLState(), sqle);
+        } catch (SQLException e) {
+            LOG.error("Error en la consulta para buscar el avatar de un contacto. Estado SQL: {}", e.getSQLState(), e);
         } finally {
             ConnectionPool.closeConnection(connection);
         }
@@ -154,8 +152,8 @@ public class ContactoDAOImpl implements ContactoDAO {
             if (resultSet.next()) {
                 codigo = resultSet.getString(1);
             }
-        } catch (SQLException sqle) {
-            LOG.error("Error en la generación de código del contacto. Estado SQL: {}", sqle.getSQLState(), sqle);
+        } catch (SQLException e) {
+            LOG.error("Error en la generación de código del contacto. Estado SQL: {}", e.getSQLState(), e);
         } finally {
             ConnectionPool.closeConnection(connection);
         }
@@ -183,9 +181,8 @@ public class ContactoDAOImpl implements ContactoDAO {
             ps.setInt(7, contacto.getUsuId());
 
             ps.executeUpdate();
-        } catch (SQLException sqle) {
-            LOG.error("Error en la consulta para insertar un contacto"
-                    + "\nMensaje: " + sqle.getMessage() + "\nEstado SQL: " + sqle.getSQLState());
+        } catch (SQLException e) {
+            LOG.error("Error en la consulta para insertar un contacto: {}. Estado SQL:{}", e.getMessage(), e.getSQLState(), e);
         } finally {
             ConnectionPool.closeConnection(connection);
         }
@@ -212,31 +209,24 @@ public class ContactoDAOImpl implements ContactoDAO {
             ps.setDate(6, Utilities.fromUtilDateToSQLDate(contacto.getConCumpleanos()));
 
             ps.executeUpdate();
-        } catch (SQLException sqle) {
-            LOG.error("Error en la consulta para actualizar un contacto"
-                    + "\nMensaje: " + sqle.getMessage() + "\nEstado SQL: " + sqle.getSQLState());
+        } catch (SQLException e) {
+            LOG.error("Error en la consulta para actualizar un contacto: {}. Estado SQL:{}", e.getMessage(), e.getSQLState(), e);
         } finally {
             ConnectionPool.closeConnection(connection);
         }
     }
 
-    public void eliminarContacto(int idContacto) {
+    public void eliminarContacto(final int idContacto) {
         String sql = "DELETE FROM contacto WHERE con_id = " + idContacto;
 
         LOG.debug(sql);
 
-        Connection connection = null;
-
-        try {
-            connection = ConnectionPool.openConnection();
+        try (Connection connection = ConnectionPool.openConnection()) {
             Statement statement = connection.createStatement();
 
             statement.executeUpdate(sql);
-        } catch (SQLException sqle) {
-            LOG.error("Error en la consulta para eliminar un contacto"
-                    + "\nMensaje: " + sqle.getMessage() + "\nEstado SQL: " + sqle.getSQLState());
-        } finally {
-            ConnectionPool.closeConnection(connection);
+        } catch (SQLException e) {
+            LOG.error("Error en la consulta para eliminar un contacto: {}. Estado SQL:{}", e.getMessage(), e.getSQLState(), e);
         }
     }
 }
