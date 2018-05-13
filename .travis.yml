@@ -16,15 +16,17 @@ script:
   - mvn clean verify
 
 after_script:
-  - echo 'Trying coverage for be-core module'
+  - pwd
+  - ls -lha
+
   - export JACOCO_SOURCE_PATH=be-core/src/main/java
   - ./cc-test-reporter format-coverage target/site/jacoco/jacoco.xml --debug --input-type jacoco
   - ./cc-test-reporter upload-coverage --debug
-  - echo 'Trying coverage for fe-icesfaces module'
+
   - export JACOCO_SOURCE_PATH=fe-icesfaces/src/main/java
   - ./cc-test-reporter format-coverage target/site/jacoco/jacoco.xml --debug --input-type jacoco
   - ./cc-test-reporter upload-coverage --debug
-  - echo 'Trying coverage for fe-richfaces module'
+
   - export JACOCO_SOURCE_PATH=fe-richfaces/src/main/java
   - ./cc-test-reporter format-coverage target/site/jacoco/jacoco.xml --debug --input-type jacoco
   - ./cc-test-reporter upload-coverage --debug

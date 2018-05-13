@@ -153,8 +153,7 @@
         </h:form>
     </rich:panel>
 
-    <rich:modalPanel id="mpInfo" autosized="true"
-                     minWidth="100" zindex="2000">
+    <rich:modalPanel id="mpInfo" autosized="true" minWidth="100" zindex="2000">
         <f:facet name="header">
             <h:outputText value="Acerca del AddressBook"/>
         </f:facet>

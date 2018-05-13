@@ -15,7 +15,7 @@ public class ManagerAgenda extends AbstractManagerAgenda {
 
     private Effect valueChangeEffect;
     /*Para los ventanas modales*/
-    private boolean show_acerca_de = false;
+    private boolean showModalAcercaDe;
 
     public ManagerAgenda() {
         super();
@@ -23,8 +23,12 @@ public class ManagerAgenda extends AbstractManagerAgenda {
         this.valueChangeEffect.setFired(true);
     }
 
-    public boolean isShow_acerca_de() {
-        return show_acerca_de;
+    public boolean isShowModalAcercaDe() {
+        return showModalAcercaDe;
+    }
+
+    public void setShowModalAcercaDe(boolean showModalAcercaDe) {
+        this.showModalAcercaDe = showModalAcercaDe;
     }
 
     public Effect getValueChangeEffect() {

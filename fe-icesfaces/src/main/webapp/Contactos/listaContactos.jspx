@@ -128,7 +128,7 @@
 
                             <ice:panelPopup id="mpInfo"
                                             draggable="true" modal="true"
-                                            visible="#{managerAgenda.show_acerca_de}"
+                                            visible="#{managerAgenda.showModalAcercaDe}"
                                             autoCentre="true">
                                 <f:facet name="header">
                                     <table width="100%">
