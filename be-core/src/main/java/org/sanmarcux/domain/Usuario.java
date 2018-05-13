@@ -12,7 +12,8 @@ import java.util.Collection;
  */
 public class Usuario implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1615297650378310164L;
+
     private int usuId;
     private String usuUsuario;
     private String usuPassword;

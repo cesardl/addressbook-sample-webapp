@@ -17,10 +17,7 @@ import java.util.regex.Pattern;
  */
 public class EmailValidator implements Validator {
 
-    public EmailValidator() {
-    }
-
-    public void validate(FacesContext fc, UIComponent uic, Object o) throws ValidatorException {
+    public void validate(FacesContext fc, UIComponent uic, Object o) {
         String enteredEmail = String.valueOf(o);
         //Set the email pattern string
         Pattern p = Pattern.compile(".+@.+\\.[a-z]+");

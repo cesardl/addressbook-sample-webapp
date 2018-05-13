@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
 
     <name>Address Book</name>
-    <description>Demo project for JSF</description>
+    <description>Demo project with JSF Framework</description>
 
     <scm>
         <url>https://github.com/cesardl/addressbook-sample-webapp</url>
@@ -84,6 +84,12 @@
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
             <version>1.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
         </dependency>
     </dependencies>
 

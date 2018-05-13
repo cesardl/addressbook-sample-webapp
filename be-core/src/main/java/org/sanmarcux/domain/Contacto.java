@@ -13,7 +13,8 @@ import java.util.Date;
  */
 public class Contacto implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 571431938765237815L;
+
     private int conId;
     private String conCodigo;
     private String conNombres;
