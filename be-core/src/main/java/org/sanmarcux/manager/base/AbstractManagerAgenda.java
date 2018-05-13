@@ -253,7 +253,7 @@ public abstract class AbstractManagerAgenda {
             if (Utilities.lengthOfString(this.getContacto().getConCodigo()) < 4) {
                 this.getContacto().setConCodigo(cm.generarCodigoContacto());
             }
-        } catch (Exception e) {
+        } catch (IllegalAccessException | ClassNotFoundException | InstantiationException e) {
             LOG.error("Error al llamar al metodo seleccionarContacto {}", e.getMessage(), e);
             this.setContacto(new Contacto());
         }

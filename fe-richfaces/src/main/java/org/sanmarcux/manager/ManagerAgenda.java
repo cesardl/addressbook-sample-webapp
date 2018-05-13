@@ -2,7 +2,6 @@ package org.sanmarcux.manager;
 
 import org.richfaces.event.UploadEvent;
 import org.richfaces.model.UploadItem;
-import org.sanmarcux.dao.ContactoDAO;
 import org.sanmarcux.manager.base.AbstractManagerAgenda;
 import org.sanmarcux.util.Utilities;
 import org.slf4j.Logger;
