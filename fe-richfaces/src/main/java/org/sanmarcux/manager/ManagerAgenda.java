@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.faces.component.UIParameter;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -62,7 +63,7 @@ public class ManagerAgenda extends AbstractManagerAgenda {
 
         LOG.debug("Se leyeron {} bytes para la generación del reporte PDF por contacto", read);
 
-        HttpServletResponse response = (HttpServletResponse) Utilities.getFacesContext().getExternalContext().getResponse();
+        HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
         response.setContentType("application/pdf");
         response.setContentLength(size);
         response.setHeader("Content-Disposition", "inline;filename=reporte.pdf");
@@ -70,7 +71,7 @@ public class ManagerAgenda extends AbstractManagerAgenda {
         output.write(pdf);
         output.flush();
         output.close();
-        Utilities.getFacesContext().responseComplete();
+        FacesContext.getCurrentInstance().responseComplete();
     }
 
     public void reporteContactos(OutputStream out, Object data) throws IOException {

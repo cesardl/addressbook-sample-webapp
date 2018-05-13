@@ -1,15 +1,15 @@
 language: java
 
 jdk:
-  - oraclejdk8
+  oraclejdk8
+
+addons:
+  apt:
+    update: true
 
 cache:
   directories:
-  - $HOME/.m2
-
-addons:
-    apt:
-      update: true
+    $HOME/.m2
 
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
@@ -17,17 +17,20 @@ before_script:
   - ./cc-test-reporter before-build
 
 script:
-  - mvn clean verify
+  mvn clean verify
 
 after_script:
-  - export JACOCO_SOURCE_PATH=be-core/src/main/java
-  - ./cc-test-reporter format-coverage be-core/target/site/jacoco/jacoco.xml --debug --input-type jacoco
-  - ./cc-test-reporter upload-coverage
+  - export SUITE=be-core
+  - export JACOCO_SOURCE_PATH=$SUITE/src/main/java
+  - ./cc-test-reporter format-coverage $SUITE/target/site/jacoco/jacoco.xml --debug --input-type jacoco --output coverage/codeclimate.$SUITE.json
 
-  - export JACOCO_SOURCE_PATH=fe-icesfaces/src/main/java
-  - ./cc-test-reporter format-coverage fe-icesfaces/target/site/jacoco/jacoco.xml --debug --input-type jacoco
-  - ./cc-test-reporter upload-coverage
+  - export SUITE=fe-icesfaces
+  - export JACOCO_SOURCE_PATH=$SUITE/src/main/java
+  - ./cc-test-reporter format-coverage $SUITE/target/site/jacoco/jacoco.xml --debug --input-type jacoco --output coverage/codeclimate.$SUITE.json
 
-  - export JACOCO_SOURCE_PATH=fe-richfaces/src/main/java
-  - ./cc-test-reporter format-coverage fe-richfaces/target/site/jacoco/jacoco.xml --debug --input-type jacoco
+  - export SUITE=fe-richfaces
+  - export JACOCO_SOURCE_PATH=$SUITE/src/main/java
+  - ./cc-test-reporter format-coverage $SUITE/target/site/jacoco/jacoco.xml --debug --input-type jacoco --output coverage/codeclimate.$SUITE.json
+
+  - ./cc-test-reporter sum-coverage coverage/codeclimate.*.json
   - ./cc-test-reporter upload-coverage

@@ -12,4 +12,10 @@
     <groupId>org.sanmarcux.samples.jsf.address-book</groupId>
     <artifactId>be-core</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
+    </dependencies>
 </project>

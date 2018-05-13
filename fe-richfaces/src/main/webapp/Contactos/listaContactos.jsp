@@ -40,7 +40,7 @@
                     </td>
                     <td align="right">
                         <a4j:commandButton id="add" action="#{managerAgenda.nuevoContacto}"
-                                           title="Añadir contacto"
+                                           title="A&ntilde;adir contacto"
                                            image="/images/new.png"/>
                         <rich:spacer width="8px"/>
 
@@ -161,7 +161,7 @@
                     style="border-style: none; text-align: center">
             <h:graphicImage styleClass="image" value="/images/mysql.png"
                             width="200px" height="105px"/>
-            <h:outputText value="<h3>Este es un pequeño ejemplo de algunos componentes de <i>RichFaces</i>
+            <h:outputText value="<h3>Este es un peque&ntilde;o ejemplo de algunos componentes de <i>RichFaces</i>
                                       , consultas a base de datos <i>MySQL</i> y generaci&oacute;n de
                                       reportes con <i>JasperReports</i>
                                       </h3>"
