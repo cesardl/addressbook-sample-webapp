@@ -22,39 +22,20 @@ public class ContactoDAOImpl implements ContactoDAO {
 
         LOG.debug(sql);
 
-        ArrayList<Contacto> listContacts = new ArrayList<>();
-        Connection connection = null;
-
-        try {
-            connection = ConnectionPool.openConnection();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
-
-            while (resultSet.next()) {
-                int id = resultSet.getInt(1);
-                String codigo = resultSet.getString(2);
-                String nombre = resultSet.getString(3);
-                String telefono = resultSet.getString(4);
-                String email = resultSet.getString(5);
-                Date cumpleanos = resultSet.getDate(6);
-
-                listContacts.add(new Contacto(id, codigo, nombre, telefono, email, cumpleanos));
-            }
-        } catch (SQLException e) {
-            LOG.error("Error en la consulta para listar todos los contactos: {}. Estado SQL:{}", e.getMessage(), e.getSQLState(), e);
-        } finally {
-            ConnectionPool.closeConnection(connection);
-        }
-        return listContacts;
+        return listContacts(sql);
     }
 
     public List<Contacto> listarContactos(String dato, int usuId) {
-        ArrayList<Contacto> listContacts = new ArrayList<>();
         String sql = "SELECT con_id, con_codigo, con_nombres, con_telefono, con_email, con_cumpleanos"
                 + " FROM contacto WHERE usu_id = " + usuId + " AND con_nombres LIKE '%" + dato + "%'";
 
         LOG.debug(sql);
 
+        return listContacts(sql);
+    }
+
+    private List<Contacto> listContacts(final String sql) {
+        List<Contacto> listContacts = new ArrayList<>();
         Connection connection = null;
 
         try {
@@ -74,7 +55,7 @@ public class ContactoDAOImpl implements ContactoDAO {
         } catch (SQLException e) {
             LOG.error("Error en la consulta para buscar varios contactos por su nombre: {}. Estado SQL:{}", e.getMessage(), e.getSQLState(), e);
         } finally {
-            ConnectionPool.closeConnection(connection);
+            ConnectionPool.closeQuietly(connection);
         }
         return listContacts;
     }
@@ -108,7 +89,7 @@ public class ContactoDAOImpl implements ContactoDAO {
             contacto = new Contacto();
             LOG.error("Error en la consulta para buscar un contacto por Id: {}. Estado SQL:{}", e.getMessage(), e.getSQLState(), e);
         } finally {
-            ConnectionPool.closeConnection(connection);
+            ConnectionPool.closeQuietly(connection);
         }
         return contacto;
     }
@@ -131,7 +112,7 @@ public class ContactoDAOImpl implements ContactoDAO {
         } catch (SQLException e) {
             LOG.error("Error en la consulta para buscar el avatar de un contacto. Estado SQL: {}", e.getSQLState(), e);
         } finally {
-            ConnectionPool.closeConnection(connection);
+            ConnectionPool.closeQuietly(connection);
         }
         return avatar;
     }
@@ -155,7 +136,7 @@ public class ContactoDAOImpl implements ContactoDAO {
         } catch (SQLException e) {
             LOG.error("Error en la generación de código del contacto. Estado SQL: {}", e.getSQLState(), e);
         } finally {
-            ConnectionPool.closeConnection(connection);
+            ConnectionPool.closeQuietly(connection);
         }
         return codigo;
     }
@@ -163,7 +144,7 @@ public class ContactoDAOImpl implements ContactoDAO {
     public void insertarContacto(Contacto contacto) {
         String sql = "INSERT INTO contacto(con_codigo, con_nombres, con_telefono,"
                 + " con_avatar, con_email, con_cumpleanos, usu_id)"
-                + " VALUES(?,?,?,?,?,?,?)";
+                + " VALUES(?, ?, ?, ?, ?, ?, ?)";
 
         LOG.debug(sql);
 
@@ -180,19 +161,21 @@ public class ContactoDAOImpl implements ContactoDAO {
             ps.setDate(6, Utilities.fromUtilDateToSQLDate(contacto.getConCumpleanos()));
             ps.setInt(7, contacto.getUsuId());
 
-            ps.executeUpdate();
+            int result = ps.executeUpdate();
+
+            LOG.debug("Total de registros afectados {}", result);
         } catch (SQLException e) {
             LOG.error("Error en la consulta para insertar un contacto: {}. Estado SQL:{}", e.getMessage(), e.getSQLState(), e);
         } finally {
-            ConnectionPool.closeConnection(connection);
+            ConnectionPool.closeQuietly(connection);
         }
     }
 
-    public void actualizarContacto(Contacto contacto) {
+    public void actualizarContacto(final Contacto contacto) {
         String sql = "UPDATE contacto SET "
                 + "con_codigo = ?, con_nombres = ?, con_telefono = ?, "
                 + "con_avatar = ?, con_email = ?, con_cumpleanos = ? "
-                + "WHERE con_id = " + contacto.getConId();
+                + "WHERE con_id = ?";
 
         LOG.debug(sql);
 
@@ -207,24 +190,31 @@ public class ContactoDAOImpl implements ContactoDAO {
             ps.setBlob(4, contacto.getConAvatar());
             ps.setString(5, contacto.getConEmail());
             ps.setDate(6, Utilities.fromUtilDateToSQLDate(contacto.getConCumpleanos()));
+            ps.setInt(7, contacto.getConId());
 
-            ps.executeUpdate();
+            int result = ps.executeUpdate();
+
+            LOG.debug("Total de registros afectados {}", result);
         } catch (SQLException e) {
             LOG.error("Error en la consulta para actualizar un contacto: {}. Estado SQL:{}", e.getMessage(), e.getSQLState(), e);
         } finally {
-            ConnectionPool.closeConnection(connection);
+            ConnectionPool.closeQuietly(connection);
         }
     }
 
     public void eliminarContacto(final int idContacto) {
-        String sql = "DELETE FROM contacto WHERE con_id = " + idContacto;
+        String sql = "DELETE FROM contacto WHERE con_id = ?";
 
         LOG.debug(sql);
 
         try (Connection connection = ConnectionPool.openConnection()) {
-            Statement statement = connection.createStatement();
+            PreparedStatement ps = connection.prepareStatement(sql);
 
-            statement.executeUpdate(sql);
+            ps.setInt(1, idContacto);
+
+            int result = ps.executeUpdate();
+
+            LOG.debug("Total de registros afectados {}", result);
         } catch (SQLException e) {
             LOG.error("Error en la consulta para eliminar un contacto: {}. Estado SQL:{}", e.getMessage(), e.getSQLState(), e);
         }

@@ -20,17 +20,14 @@ script:
   - mvn clean verify
 
 after_script:
-  - pwd
-  - ls -lha
-
   - export JACOCO_SOURCE_PATH=be-core/src/main/java
   - ./cc-test-reporter format-coverage be-core/target/site/jacoco/jacoco.xml --debug --input-type jacoco
-  - ./cc-test-reporter upload-coverage --debug
+  - ./cc-test-reporter upload-coverage
 
   - export JACOCO_SOURCE_PATH=fe-icesfaces/src/main/java
   - ./cc-test-reporter format-coverage fe-icesfaces/target/site/jacoco/jacoco.xml --debug --input-type jacoco
-  - ./cc-test-reporter upload-coverage --debug
+  - ./cc-test-reporter upload-coverage
 
   - export JACOCO_SOURCE_PATH=fe-richfaces/src/main/java
   - ./cc-test-reporter format-coverage fe-richfaces/target/site/jacoco/jacoco.xml --debug --input-type jacoco
-  - ./cc-test-reporter upload-coverage --debug
+  - ./cc-test-reporter upload-coverage

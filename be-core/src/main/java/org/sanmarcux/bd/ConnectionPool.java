@@ -38,7 +38,7 @@ public class ConnectionPool {
         }
     }
 
-    public static void closeConnection(Connection connection) {
+    public static void closeQuietly(Connection connection) {
         try {
             if (connection != null) {
                 connection.close();

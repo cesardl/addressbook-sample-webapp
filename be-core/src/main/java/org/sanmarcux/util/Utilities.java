@@ -124,7 +124,7 @@ public class Utilities {
             JasperPrint jasperPrint = JasperFillManager.fillReport(reportStream, parameters, connection);
             JasperExportManager.exportReportToPdfStream(jasperPrint, buffer);
 
-            ConnectionPool.closeConnection(connection);
+            ConnectionPool.closeQuietly(connection);
 
             byte[] bytes = buffer.toByteArray();
             buffer.flush();
