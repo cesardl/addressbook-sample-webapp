@@ -1,4 +1,4 @@
-Address Book [![Build Status](https://travis-ci.org/cesardl/addressbook-sample-webapp.svg?branch=master)](https://travis-ci.org/cesardl/addressbook-sample-webapp) [![Maintainability](https://api.codeclimate.com/v1/badges/ad8b96409b766ee88044/maintainability)](https://codeclimate.com/github/cesardl/addressbook-sample-webapp/maintainability)
+Address Book [![Build Status](https://travis-ci.org/cesardl/addressbook-sample-webapp.svg?branch=master)](https://travis-ci.org/cesardl/addressbook-sample-webapp) [![Maintainability](https://api.codeclimate.com/v1/badges/ad8b96409b766ee88044/maintainability)](https://codeclimate.com/github/cesardl/addressbook-sample-webapp/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/ad8b96409b766ee88044/test_coverage)](https://codeclimate.com/github/cesardl/addressbook-sample-webapp/test_coverage)
 ===========
 
 AddressBook es un proyecto de ejemplo que realic&eacute; all&aacute; por el a&ntilde;o 2010. Utiliza JSF para la parte visual y consta de dos implementaciones
@@ -23,4 +23,10 @@ Esta es la query con la que obtuve los datos desde el schema _Employees_.
 `
 insert into address_book.contacto(con_nombres, con_cumpleanos, usu_id)
 select concat(first_name, ' ', last_name), hire_date, 1 from employees;
+`
+
+El actual backup de la base de datos ya lleva los passwords asegurados, inicialmente fueron creados con la siguiente query:
+
+`
+INSERT INTO usuario VALUES (1,'admin', PASSWORD('4dm1n')),(2,'cesardl',PASSWORD('123456'));
 `

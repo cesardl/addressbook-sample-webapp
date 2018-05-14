@@ -112,14 +112,12 @@ public class Utilities {
      * @return an array of bytes with the report's data
      */
     public byte[] getReportBytes(String jasperPath, Map<?, ?> parameters) {
-        Connection connection = null;
-        try {
+        try (Connection connection = ConnectionPool.openConnection()) {
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
             FacesContext context = FacesContext.getCurrentInstance();
             InputStream reportStream = context.getExternalContext().getResourceAsStream(jasperPath);
 
-            connection = ConnectionPool.openConnection();
             JasperPrint jasperPrint = JasperFillManager.fillReport(reportStream, parameters, connection);
             JasperExportManager.exportReportToPdfStream(jasperPrint, buffer);
 
@@ -130,8 +128,6 @@ public class Utilities {
         } catch (JRException | IOException | SQLException e) {
             LOG.error(e.getMessage(), e);
             return null;
-        } finally {
-            ConnectionPool.closeQuietly(connection);
         }
     }
 

@@ -9,7 +9,7 @@ public interface ContactoDAO {
 
     List<Contacto> listarContactos(int usuId);
 
-    List<Contacto> listarContactos(String dato, int usuId);
+    List<Contacto> listarContactos(int usuId, String dato);
 
     Contacto seleccionarContacto(int idContacto);
 

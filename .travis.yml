@@ -22,15 +22,15 @@ script:
 after_script:
   - export SUITE=be-core
   - export JACOCO_SOURCE_PATH=$SUITE/src/main/java
-  - ./cc-test-reporter format-coverage $SUITE/target/site/jacoco/jacoco.xml --debug --input-type jacoco --output coverage/codeclimate.$SUITE.json
+  - ./cc-test-reporter format-coverage $SUITE/target/site/jacoco/jacoco.xml --input-type jacoco --output coverage/codeclimate.$SUITE.json
 
   - export SUITE=fe-icesfaces
   - export JACOCO_SOURCE_PATH=$SUITE/src/main/java
-  - ./cc-test-reporter format-coverage $SUITE/target/site/jacoco/jacoco.xml --debug --input-type jacoco --output coverage/codeclimate.$SUITE.json
+  - ./cc-test-reporter format-coverage $SUITE/target/site/jacoco/jacoco.xml --input-type jacoco --output coverage/codeclimate.$SUITE.json
 
   - export SUITE=fe-richfaces
   - export JACOCO_SOURCE_PATH=$SUITE/src/main/java
-  - ./cc-test-reporter format-coverage $SUITE/target/site/jacoco/jacoco.xml --debug --input-type jacoco --output coverage/codeclimate.$SUITE.json
+  - ./cc-test-reporter format-coverage $SUITE/target/site/jacoco/jacoco.xml --input-type jacoco --output coverage/codeclimate.$SUITE.json
 
   - ./cc-test-reporter sum-coverage coverage/codeclimate.*.json
   - ./cc-test-reporter upload-coverage

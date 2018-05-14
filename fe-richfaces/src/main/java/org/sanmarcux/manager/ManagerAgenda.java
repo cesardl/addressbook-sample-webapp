@@ -22,16 +22,12 @@ public class ManagerAgenda extends AbstractManagerAgenda {
 
     private static final Logger LOG = LoggerFactory.getLogger(ManagerAgenda.class);
 
-    public ManagerAgenda() {
-        super();
-    }
-
     public void cargarImagen(UploadEvent event) {
         try {
             UploadItem item = event.getUploadItem();
 
             this.setB_mime(item.getContentType());
-            this.setB_file_name(item.getFileName());
+
             File file = item.getFile();
             contacto.setConAvatar(new SerialBlob(Utilities.fromFileToByteArray(file)));
             boolean deleted = file.delete();

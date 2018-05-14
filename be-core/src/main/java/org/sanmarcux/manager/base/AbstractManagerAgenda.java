@@ -13,6 +13,7 @@ import java.io.OutputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -28,9 +29,6 @@ public abstract class AbstractManagerAgenda {
 
     private List<Contacto> lista;
     protected Contacto contacto;
-    private int b_id;
-    private String b_nombre;
-    private String b_email;
     private String titulo;
     private int editar;
     /*Para el autocompletar*/
@@ -38,7 +36,6 @@ public abstract class AbstractManagerAgenda {
     private String sug_id;
     private Blob sug_avatar;
     /*Para el manejo de imagenes*/
-    private String b_file_name;
     private String b_mime;
     protected Utilities util;
 
@@ -85,38 +82,11 @@ public abstract class AbstractManagerAgenda {
         this.contacto = contacto;
     }
 
-    public String getB_email() {
-        return b_email;
-    }
-
-    public void setB_email(String b_email) {
-        this.b_email = b_email;
-    }
-
-    public int getB_id() {
-        return b_id;
-    }
-
-    public void setB_id(int b_id) {
-        this.b_id = b_id;
-    }
-
-    public String getB_nombre() {
-        return b_nombre;
-    }
-
-    public void setB_nombre(String b_nombre) {
-        this.b_nombre = b_nombre;
-    }
-
     public String getSugstring() {
         return sugstring;
     }
 
     public void setSugstring(String sugstring) {
-        if (sugstring != null) {
-            sugstring = "";
-        }
         this.sugstring = sugstring;
     }
 
@@ -134,14 +104,6 @@ public abstract class AbstractManagerAgenda {
 
     public void setSug_avatar(Blob sug_avatar) {
         this.sug_avatar = sug_avatar;
-    }
-
-    public String getB_file_name() {
-        return b_file_name;
-    }
-
-    public void setB_file_name(String b_file_name) {
-        this.b_file_name = b_file_name;
     }
 
     public String getB_mime() {
@@ -188,25 +150,25 @@ public abstract class AbstractManagerAgenda {
         try {
             ContactoDAO cm = (ContactoDAO) Class.forName("org.sanmarcux.dao.impl.ContactoDAOImpl").newInstance();
             return cm.generarCodigoContacto();
-        } catch (Exception e) {
+        } catch (IllegalAccessException | ClassNotFoundException | InstantiationException e) {
             LOG.error("Error al llamar al metodo insertarContacto {}", e.getMessage(), e);
             return "";
         }
     }
 
-    public void insertarContacto() {
+    private void insertarContacto() {
         int userId = util.getUsuId();
         LOG.info("Registrando nuevo contacto para el usuario {}", userId);
         try {
             ContactoDAO cm = (ContactoDAO) Class.forName("org.sanmarcux.dao.impl.ContactoDAOImpl").newInstance();
             contacto.setUsuId(userId);
             cm.insertarContacto(this.contacto);
-        } catch (Exception e) {
+        } catch (IllegalAccessException | ClassNotFoundException | InstantiationException e) {
             LOG.error("Error al llamar al metodo insertarContacto {}", e.getMessage(), e);
         }
     }
 
-    public void actualizarContacto() {
+    private void actualizarContacto() {
         int userId = util.getUsuId();
         LOG.info("Actualizando contacto {} para el usuario {}", this.editar, userId);
         try {
@@ -214,7 +176,7 @@ public abstract class AbstractManagerAgenda {
             this.contacto.setUsuId(userId);
             ContactoDAO cm = (ContactoDAO) Class.forName("org.sanmarcux.dao.impl.ContactoDAOImpl").newInstance();
             cm.actualizarContacto(this.getContacto());
-        } catch (Exception e) {
+        } catch (IllegalAccessException | ClassNotFoundException | InstantiationException e) {
             LOG.error("Error al llamar al metodo actualizarContacto {}", e.getMessage(), e);
         }
     }
@@ -260,11 +222,17 @@ public abstract class AbstractManagerAgenda {
     }
 
     public List<Contacto> autocomplete(Object suggest) {
-        String dato = String.valueOf(suggest);
+        if ("null".equalsIgnoreCase(suggest.toString())) {
+            return Collections.emptyList();
+        }
+
         List<Contacto> result = new ArrayList<>();
+
         try {
             ContactoDAO dao = (ContactoDAO) Class.forName("org.sanmarcux.dao.impl.ContactoDAOImpl").newInstance();
-            List<Contacto> lTmp = dao.listarContactos(dato, util.getUsuId());
+            List<Contacto> lTmp = dao.listarContactos(util.getUsuId(), suggest.toString());
+
+            LOG.info("Se obtuvieron {} contactos en la búsqueda de: {}", lTmp.size(), suggest);
             for (Contacto aLTmp : lTmp) {
                 Contacto c = new Contacto();
                 c.setConId(aLTmp.getConId());
@@ -279,7 +247,7 @@ public abstract class AbstractManagerAgenda {
             return result;
         } catch (IllegalAccessException | ClassNotFoundException | InstantiationException e) {
             LOG.error("Error al llamar al metodo autocomplete {}", e.getMessage(), e);
-            return null;
+            return Collections.emptyList();
         }
     }
 

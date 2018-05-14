@@ -12,4 +12,6 @@ import org.sanmarcux.domain.Usuario;
 public interface UsuarioDAO {
 
     Usuario getUsuario(Usuario usuario);
+
+    void actualizarUltimoAcceso(int usuId);
 }

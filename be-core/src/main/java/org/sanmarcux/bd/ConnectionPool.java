@@ -1,8 +1,6 @@
 package org.sanmarcux.bd;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -10,8 +8,6 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class ConnectionPool {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ConnectionPool.class);
 
     private static DataSource dataSource;
 
@@ -30,23 +26,6 @@ public class ConnectionPool {
     }
 
     public static Connection openConnection() throws SQLException {
-        try {
-            return dataSource.getConnection();
-        } catch (SQLException sqle) {
-            LOG.error("Error al abrir la conexion", sqle);
-            throw sqle;
-        }
-    }
-
-    public static void closeQuietly(Connection connection) {
-        try {
-            if (connection != null) {
-                connection.close();
-            } else {
-                LOG.warn("No hay una conexión abierta para cerrar");
-            }
-        } catch (SQLException e) {
-            LOG.error("Error al cerrar la conexion", e);
-        }
+        return dataSource.getConnection();
     }
 }

@@ -10,10 +10,7 @@ import org.sanmarcux.domain.Usuario;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 /**
  * @author cesardl
@@ -23,32 +20,50 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     private static final Logger LOG = LoggerFactory.getLogger(UsuarioDAOImpl.class);
 
     public Usuario getUsuario(final Usuario usuario) {
+        String sql = "SELECT usu_id, usu_usuario FROM usuario WHERE usu_usuario = ? AND usu_password = ?";
+
+        LOG.debug(sql);
+
         Usuario user = null;
-        Connection connection = null;
 
-        try {
-            String sql = "SELECT usu_id, usu_usuario, usu_password"
-                    + " FROM usuario WHERE usu_usuario = '" + usuario.getUsuUsuario() + "'"
-                    + " AND usu_password = '" + usuario.getUsuPassword() + "';";
+        try (Connection connection = ConnectionPool.openConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
 
-            LOG.debug(sql);
+            ps.setString(1, usuario.getUsuUsuario());
+            ps.setString(2, usuario.getUsuPassword());
 
-            connection = ConnectionPool.openConnection();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
+            try (ResultSet resultSet = ps.executeQuery()) {
 
-            if (resultSet.next()) {
-                user = new Usuario();
-                user.setUsuId(resultSet.getInt(1));
-                user.setUsuUsuario(resultSet.getString(2));
-                user.setUsuPassword(resultSet.getString(3));
+                if (resultSet.next()) {
+                    user = new Usuario();
+                    user.setUsuId(resultSet.getInt(1));
+                    user.setUsuUsuario(resultSet.getString(2));
+                }
             }
         } catch (SQLException sqle) {
             LOG.error("Error en la consulta para buscar un usuario. Estado SQL: {}", sqle.getSQLState(), sqle);
-        } finally {
-            ConnectionPool.closeQuietly(connection);
         }
 
         return user;
+    }
+
+    @Override
+    public void actualizarUltimoAcceso(final int usuId) {
+        String sql = "UPDATE usuario SET last_login = ? WHERE usu_id = ?";
+
+        LOG.debug(sql);
+
+        try (Connection connection = ConnectionPool.openConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+            ps.setInt(2, usuId);
+
+            int result = ps.executeUpdate();
+
+            LOG.debug("Total de registros afectados: {}", result);
+        } catch (SQLException sqle) {
+            LOG.error("Error en la consulta para buscar un usuario. Estado SQL: {}", sqle.getSQLState(), sqle);
+        }
     }
 }
