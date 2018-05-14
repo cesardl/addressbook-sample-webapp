@@ -17,14 +17,21 @@
     <link type="text/css" href="../css/addressbook.css" rel="stylesheet" media="screen"/>
     <script type="text/javascript">
         /**
-         function processObjectsChange(sgcomp, idCont, nomCont, mailCont, cumplCont) {
+         * Method that change pane of selected contact.
+         *
+         * @param sgcomp selected item
+         * @param idCont contact identifier
+         * @param nomCont contact name
+         * @param mailCont contact email
+         * @param cumplCont contact birthday
+         */
+        function processObjectsChange(sgcomp, idCont, nomCont, mailCont, cumplCont) {
             var items = sgcomp.getSelectedItems();
             idCont.value = items.pluck('conId');
             nomCont.innerHTML = items.pluck('conNombres');
             mailCont.innerHTML = items.pluck('conEmail');
             cumplCont.innerHTML = items.pluck('conStrcumpl');
         }
-         **/
     </script>
     <title>Busqueda de contacto</title>
 </head>

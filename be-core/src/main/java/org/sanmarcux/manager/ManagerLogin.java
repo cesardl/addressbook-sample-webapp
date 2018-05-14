@@ -6,7 +6,6 @@ package org.sanmarcux.manager;
 
 import org.sanmarcux.dao.UsuarioDAO;
 import org.sanmarcux.domain.Usuario;
-import org.sanmarcux.util.Utilities;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -50,10 +49,13 @@ public class ManagerLogin {
         try {
             UsuarioDAO dao = (UsuarioDAO) Class.forName("org.sanmarcux.dao.impl.UsuarioDAOImpl").newInstance();
             Usuario user = dao.getUsuario(this.usuario);
+
             if (user == null) {
                 this.setError(true);
                 return NAVIGATION_TO_LOGIN;
             } else {
+                dao.actualizarUltimoAcceso(user.getUsuId());
+
                 ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
                 HttpSession session = (HttpSession) context.getSession(false);
                 session.setAttribute("usuario", user);
