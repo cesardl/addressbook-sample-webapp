@@ -87,6 +87,16 @@ public class Utilities {
         return cadena.trim().length();
     }
 
+    public static String buildMySQLPassword(final String plainText) {
+        try {
+            byte[] utf8 = plainText.getBytes("UTF-8");
+            return "*" + DigestUtils.sha1Hex(DigestUtils.sha1(utf8)).toUpperCase();
+        } catch (UnsupportedEncodingException e) {
+            LOG.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
     /**
      * Metodo que devuelve el Id del usuario logeado.
      *
@@ -126,16 +136,6 @@ public class Utilities {
             buffer.close();
             return bytes;
         } catch (JRException | IOException | SQLException e) {
-            LOG.error(e.getMessage(), e);
-            return null;
-        }
-    }
-
-    public static String buildMySQLPassword(final String plainText) {
-        try {
-            byte[] utf8 = plainText.getBytes("UTF-8");
-            return "*" + DigestUtils.sha1Hex(DigestUtils.sha1(utf8)).toUpperCase();
-        } catch (UnsupportedEncodingException e) {
             LOG.error(e.getMessage(), e);
             return null;
         }

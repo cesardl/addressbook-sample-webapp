@@ -184,7 +184,6 @@ public class ContactoDAOImpl implements ContactoDAO {
         try (Connection connection = ConnectionPool.openConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
-
             ps.setString(1, contacto.getConCodigo());
             ps.setString(2, contacto.getConNombres());
             ps.setString(3, contacto.getConTelefono());

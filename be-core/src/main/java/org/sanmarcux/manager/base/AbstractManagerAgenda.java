@@ -27,8 +27,9 @@ public abstract class AbstractManagerAgenda {
 
     private static final String NAVIGATION_TO_EDIT = "TO_EDIT";
 
-    private List<Contacto> lista;
     protected Contacto contacto;
+    protected Utilities util;
+    private List<Contacto> lista;
     private String titulo;
     private int editar;
     /*Para el autocompletar*/
@@ -37,7 +38,6 @@ public abstract class AbstractManagerAgenda {
     private Blob sug_avatar;
     /*Para el manejo de imagenes*/
     private String b_mime;
-    protected Utilities util;
 
     public AbstractManagerAgenda() {
         LOG.debug("Constructor");
