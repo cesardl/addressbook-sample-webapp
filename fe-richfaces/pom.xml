@@ -15,6 +15,14 @@
 
     <packaging>war</packaging>
 
+    <repositories>
+        <repository>
+            <id>GitHub</id>
+            <name>My Own Maven Repository on GitHub</name>
+            <url>https://raw.githubusercontent.com/cesardl/repository/master/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.sanmarcux.samples.jsf.address-book</groupId>
@@ -23,32 +31,24 @@
         </dependency>
 
         <dependency>
-            <groupId>org.richfaces.ui</groupId>
+            <groupId>org.richfaces.framework</groupId>
             <artifactId>richfaces-api</artifactId>
             <version>3.3.3.Final</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/../libs_richfaces/richfaces-api-3.3.3.Final.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>org.richfaces.ui</groupId>
+            <groupId>org.richfaces.framework</groupId>
             <artifactId>richfaces-impl</artifactId>
             <version>3.3.3.Final</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/../libs_richfaces/richfaces-impl-3.3.3.Final.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>org.richfaces.ui</groupId>
+            <groupId>org.richfaces.framework</groupId>
             <artifactId>richfaces-ui</artifactId>
             <version>3.3.3.Final</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/../libs_richfaces/richfaces-ui-3.3.3.Final.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>org.richfaces.samples</groupId>
+            <groupId>org.richfaces.skins</groupId>
             <artifactId>glassX</artifactId>
             <version>3.3.3.Final</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/../libs_richfaces/glassX-3.3.3.Final.jar</systemPath>
         </dependency>
     </dependencies>
 

@@ -73,12 +73,12 @@ public class ManagerAgenda extends AbstractManagerAgenda {
     public void reporteContactos(OutputStream out, Object data) throws IOException {
         if (data != null) {
             if (data.equals("allContacts")) {
-                String jasper_path = "/reportes/report_all_contacts.jasper";
+                String jasperPath = "/reportes/report_all_contacts.jasper";
 
                 Map<String, Integer> parameters = new HashMap<>();
                 parameters.put("USU_ID", util.getUsuId());
 
-                InputStream input = new ByteArrayInputStream(util.getReportBytes(jasper_path, parameters));
+                InputStream input = new ByteArrayInputStream(util.getReportBytes(jasperPath, parameters));
 
                 int size = input.available();
                 byte[] pdf = new byte[size];

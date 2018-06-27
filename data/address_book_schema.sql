@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.7.13, for Win32 (AMD64)
 --
--- Host: localhost    Database: address_book
+-- Host: 127.0.0.1    Database: address_book
 -- ------------------------------------------------------
 -- Server version	5.7.13-log
 
@@ -24,17 +24,20 @@ DROP TABLE IF EXISTS `contacto`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `contacto` (
   `con_id` int(11) NOT NULL AUTO_INCREMENT,
-  `con_codigo` varchar(5) NOT NULL,
-  `con_nombres` varchar(250) NOT NULL,
-  `con_telefono` varchar(9) DEFAULT NULL,
+  `con_codigo` varchar(5) CHARACTER SET latin1 NOT NULL,
+  `con_nombres` varchar(250) CHARACTER SET latin1 NOT NULL,
+  `con_telefono` varchar(9) CHARACTER SET latin1 DEFAULT NULL,
   `con_avatar` blob,
-  `con_email` varchar(50) DEFAULT NULL,
+  `con_email` varchar(50) CHARACTER SET latin1 DEFAULT NULL,
   `con_cumpleanos` date DEFAULT NULL,
   `usu_id` int(11) NOT NULL,
   PRIMARY KEY (`con_id`) USING BTREE,
+  UNIQUE KEY `con_id_UNIQUE` (`con_id`),
+  UNIQUE KEY `con_codigo_UNIQUE` (`con_codigo`),
+  UNIQUE KEY `con_email_UNIQUE` (`con_email`),
   KEY `fk_contacto_usuario` (`usu_id`),
   CONSTRAINT `fk_contacto_usuario` FOREIGN KEY (`usu_id`) REFERENCES `usuario` (`usu_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -56,11 +59,14 @@ DROP TABLE IF EXISTS `usuario`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `usuario` (
   `usu_id` int(11) NOT NULL AUTO_INCREMENT,
-  `usu_usuario` varchar(41) NOT NULL,
-  `usu_password` varchar(41) NOT NULL,
+  `usu_usuario` varchar(41) CHARACTER SET latin1 NOT NULL,
+  `usu_password` varchar(41) CHARACTER SET latin1 NOT NULL,
+  `usu_role` enum('USER','ADMIN') DEFAULT 'USER',
   `last_login` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`usu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`usu_id`),
+  UNIQUE KEY `usu_usuario_UNIQUE` (`usu_usuario`),
+  UNIQUE KEY `usu_id_UNIQUE` (`usu_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -69,7 +75,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'admin','*68AB655AF1DDBDB3179671D16EB5B698564AC722','2018-05-14 00:33:00'),(2,'cesardl','*6BB4837EB74329105EE4568DDA7DC67ED2CA2AD9','2018-05-14 00:09:23');
+INSERT INTO `usuario` VALUES (1,'admin','*68AB655AF1DDBDB3179671D16EB5B698564AC722','ADMIN','2018-06-27 05:02:23'),(2,'cesardl','*6BB4837EB74329105EE4568DDA7DC67ED2CA2AD9','USER','2018-06-27 04:48:35');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -82,4 +88,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-05-13 19:35:23
+-- Dump completed on 2018-06-27  0:06:34
