@@ -3,6 +3,7 @@ package org.sanmarcux.dao.impl;
 import org.sanmarcux.bd.ConnectionPool;
 import org.sanmarcux.dao.ContactoDAO;
 import org.sanmarcux.domain.Contacto;
+import org.sanmarcux.domain.Usuario;
 import org.sanmarcux.util.Utilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,16 +18,21 @@ public class ContactoDAOImpl implements ContactoDAO {
 
     private static final Logger LOG = LoggerFactory.getLogger(ContactoDAOImpl.class);
 
-    public List<Contacto> listarContactos(final int usuId) {
-        String sql = "SELECT con_id, con_codigo, con_nombres, con_telefono, con_email, con_cumpleanos "
-                + "FROM contacto WHERE usu_id = ?";
+    public List<Contacto> listarContactos(final int usuId, final Usuario.Role role) {
+        String sql = "SELECT con_id, con_codigo, con_nombres, con_telefono, con_email, con_cumpleanos FROM contacto";
+
+        if (Usuario.Role.USER.equals(role)) {
+            sql = sql + " WHERE usu_id = ?";
+        }
 
         LOG.debug(sql);
 
         try (Connection connection = ConnectionPool.openConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
-            ps.setInt(1, usuId);
+            if (Usuario.Role.USER.equals(role)) {
+                ps.setInt(1, usuId);
+            }
 
             return listContacts(ps);
         } catch (SQLException e) {

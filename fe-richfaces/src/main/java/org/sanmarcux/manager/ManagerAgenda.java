@@ -29,7 +29,7 @@ public class ManagerAgenda extends AbstractManagerAgenda {
             this.setB_mime(item.getContentType());
 
             File file = item.getFile();
-            contacto.setConAvatar(new SerialBlob(Utilities.fromFileToByteArray(file)));
+            contacto.setConAvatar(new SerialBlob(java.nio.file.Files.readAllBytes(file.toPath())));
             boolean deleted = file.delete();
 
             if (deleted) {
@@ -51,7 +51,7 @@ public class ManagerAgenda extends AbstractManagerAgenda {
         Map<String, Integer> parameters = new HashMap<>();
         parameters.put("CON_ID", contactId);
 
-        InputStream input = new ByteArrayInputStream(util.getReportBytes(jasperPath, parameters));
+        InputStream input = new ByteArrayInputStream(getReportBytes(jasperPath, parameters));
 
         int size = input.available();
         byte[] pdf = new byte[size];
@@ -73,12 +73,12 @@ public class ManagerAgenda extends AbstractManagerAgenda {
     public void reporteContactos(OutputStream out, Object data) throws IOException {
         if (data != null) {
             if (data.equals("allContacts")) {
-                String jasper_path = "/reportes/report_all_contacts.jasper";
+                String jasperPath = "/reportes/report_all_contacts.jasper";
 
                 Map<String, Integer> parameters = new HashMap<>();
-                parameters.put("USU_ID", util.getUsuId());
+                parameters.put("USU_ID", getUser().getUsuId());
 
-                InputStream input = new ByteArrayInputStream(util.getReportBytes(jasper_path, parameters));
+                InputStream input = new ByteArrayInputStream(getReportBytes(jasperPath, parameters));
 
                 int size = input.available();
                 byte[] pdf = new byte[size];

@@ -20,7 +20,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     private static final Logger LOG = LoggerFactory.getLogger(UsuarioDAOImpl.class);
 
     public Usuario getUsuario(final Usuario usuario) {
-        String sql = "SELECT usu_id, usu_usuario FROM usuario WHERE usu_usuario = ? AND usu_password = ?";
+        String sql = "SELECT usu_id, usu_usuario, usu_role FROM usuario WHERE usu_usuario = ? AND usu_password = ?";
 
         LOG.debug(sql);
 
@@ -38,6 +38,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                     user = new Usuario();
                     user.setUsuId(resultSet.getInt(1));
                     user.setUsuUsuario(resultSet.getString(2));
+                    user.setRole(Usuario.Role.valueOf(resultSet.getString(3)));
                 }
             }
         } catch (SQLException sqle) {

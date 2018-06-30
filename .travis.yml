@@ -1,7 +1,7 @@
 language: java
 
 jdk:
-  oraclejdk8
+  - oraclejdk8
 
 addons:
   apt:
@@ -9,7 +9,13 @@ addons:
 
 cache:
   directories:
-    $HOME/.m2
+    - $HOME/.m2
+
+git:
+  depth: 10
+
+before_install:
+  - mysql -u travis < data/address_book_schema.sql
 
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
@@ -17,7 +23,7 @@ before_script:
   - ./cc-test-reporter before-build
 
 script:
-  mvn clean verify
+  - mvn clean verify
 
 after_script:
   - export SUITE=be-core

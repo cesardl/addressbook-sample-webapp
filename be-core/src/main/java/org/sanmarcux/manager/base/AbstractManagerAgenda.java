@@ -1,20 +1,33 @@
 package org.sanmarcux.manager.base;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import org.sanmarcux.bd.ConnectionPool;
 import org.sanmarcux.dao.ContactoDAO;
 import org.sanmarcux.domain.Contacto;
+import org.sanmarcux.domain.Usuario;
 import org.sanmarcux.util.Utilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.faces.component.UIParameter;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.servlet.http.HttpSession;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Blob;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 12/05/2018.
@@ -28,7 +41,6 @@ public abstract class AbstractManagerAgenda {
     private static final String NAVIGATION_TO_EDIT = "TO_EDIT";
 
     protected Contacto contacto;
-    protected Utilities util;
     private List<Contacto> lista;
     private String titulo;
     private int editar;
@@ -42,7 +54,6 @@ public abstract class AbstractManagerAgenda {
     public AbstractManagerAgenda() {
         LOG.debug("Constructor");
         this.contacto = new Contacto();
-        util = new Utilities();
         this.editar = 0;
     }
 
@@ -55,18 +66,18 @@ public abstract class AbstractManagerAgenda {
     }
 
     public List<Contacto> getLista() {
-        int userId = util.getUsuId();
-        LOG.info("Obteniendo lista de contactos del usuario {}", userId);
+        Usuario user = getUser();
+        LOG.info("Obteniendo lista de contactos del usuario {} con rol {}", user.getUsuId(), user.getRole());
 
         try {
             ContactoDAO cm = (ContactoDAO) Class.forName("org.sanmarcux.dao.impl.ContactoDAOImpl").newInstance();
-            lista = cm.listarContactos(userId);
+            lista = cm.listarContactos(user.getUsuId(), user.getRole());
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
             LOG.error("Error al cargar la lista de contactos", ex);
             lista = new ArrayList<>();
         }
 
-        LOG.info("Se obtuvieron {} contactos del usuario {}", lista.size(), userId);
+        LOG.info("Se obtuvieron {} contactos del usuario {}", lista.size(), user.getUsuUsuario());
         return lista;
     }
 
@@ -157,7 +168,7 @@ public abstract class AbstractManagerAgenda {
     }
 
     private void insertarContacto() {
-        int userId = util.getUsuId();
+        int userId = getUser().getUsuId();
         LOG.info("Registrando nuevo contacto para el usuario {}", userId);
         try {
             ContactoDAO cm = (ContactoDAO) Class.forName("org.sanmarcux.dao.impl.ContactoDAOImpl").newInstance();
@@ -169,7 +180,7 @@ public abstract class AbstractManagerAgenda {
     }
 
     private void actualizarContacto() {
-        int userId = util.getUsuId();
+        int userId = getUser().getUsuId();
         LOG.info("Actualizando contacto {} para el usuario {}", this.editar, userId);
         try {
             this.contacto.setConId(this.editar);
@@ -230,10 +241,10 @@ public abstract class AbstractManagerAgenda {
 
         try {
             ContactoDAO dao = (ContactoDAO) Class.forName("org.sanmarcux.dao.impl.ContactoDAOImpl").newInstance();
-            List<Contacto> lTmp = dao.listarContactos(util.getUsuId(), suggest.toString());
+            List<Contacto> contacts = dao.listarContactos(getUser().getUsuId(), suggest.toString());
 
-            LOG.info("Se obtuvieron {} contactos en la búsqueda de: {}", lTmp.size(), suggest);
-            for (Contacto aLTmp : lTmp) {
+            LOG.info("Se obtuvieron {} contacts en la búsqueda de: '{}'", contacts.size(), suggest);
+            for (Contacto aLTmp : contacts) {
                 Contacto c = new Contacto();
                 c.setConId(aLTmp.getConId());
                 c.setConCodigo(aLTmp.getConCodigo());
@@ -275,7 +286,6 @@ public abstract class AbstractManagerAgenda {
         }
     }
 
-
     public void avatarContacto(final OutputStream stream, final Object data) throws IOException, SQLException {
         if ("vAvatar".equals(data)) {
             LOG.debug("Mostrando imágen del contacto al editar");
@@ -291,6 +301,50 @@ public abstract class AbstractManagerAgenda {
             }
         } else {
             throw new UnsupportedOperationException();
+        }
+    }
+
+    /**
+     * Metodo que devuelve el Id del usuario logeado.
+     *
+     * @return as user identifier
+     */
+    protected Usuario getUser() {
+        ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+        HttpSession session = (HttpSession) context.getSession(true);
+        Object attribute = session.getAttribute("usuario");
+
+        if (attribute == null) {
+            LOG.warn("No se encontró algún usuario logueado");
+            return null;
+        }
+
+        LOG.info("Obteniedo identificador de usuario");
+        return (Usuario) attribute;
+    }
+
+    /**
+     * @param jasperPath path of the template
+     * @param parameters of the template
+     * @return an array of bytes with the report's data
+     */
+    protected byte[] getReportBytes(String jasperPath, Map<?, ?> parameters) {
+        try (Connection connection = ConnectionPool.openConnection()) {
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+            FacesContext context = FacesContext.getCurrentInstance();
+            InputStream reportStream = context.getExternalContext().getResourceAsStream(jasperPath);
+
+            JasperPrint jasperPrint = JasperFillManager.fillReport(reportStream, parameters, connection);
+            JasperExportManager.exportReportToPdfStream(jasperPrint, buffer);
+
+            byte[] bytes = buffer.toByteArray();
+            buffer.flush();
+            buffer.close();
+            return bytes;
+        } catch (JRException | IOException | SQLException e) {
+            LOG.error(e.getMessage(), e);
+            return null;
         }
     }
 }

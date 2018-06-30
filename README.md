@@ -13,7 +13,7 @@ Contiene b&aacute;sicamente un CRUD de contactos relacionado al usuario logueado
 Considerar el siguiente comando con el que se hizo un backup de la base de datos.
 
 `
-mysqldump -u <user> -p address_book > address_book_schema.sql
+mysqldump -u <user> -p -B address_book > address_book_schema.sql
 `
 
 Me aprovech&eacute; de una base de datos de ejemplo llamada **_Employees_** en donde insert&eacute; cerca de 30k registros como contactos. Ahora la aplicaci&oacute;n tiene problemas  de performance que deben ser corregidos.

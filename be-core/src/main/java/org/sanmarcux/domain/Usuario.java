@@ -15,9 +15,14 @@ public class Usuario implements Serializable {
 
     private static final long serialVersionUID = 1615297650378310164L;
 
+    public enum Role {
+        ADMIN, USER
+    }
+
     private int usuId;
     private String usuUsuario;
     private String usuPassword;
+    private Role role;
 
     public int getUsuId() {
         return usuId;
@@ -41,5 +46,13 @@ public class Usuario implements Serializable {
 
     public void setUsuUsuario(String usuUsuario) {
         this.usuUsuario = usuUsuario;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

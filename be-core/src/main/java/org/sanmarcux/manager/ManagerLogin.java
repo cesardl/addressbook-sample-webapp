@@ -71,9 +71,9 @@ public class ManagerLogin {
         ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
         HttpSession session = (HttpSession) context.getSession(true);
 
-        Enumeration atributos = session.getAttributeNames();
-        while (atributos.hasMoreElements()) {
-            session.removeAttribute((String) atributos.nextElement());
+        Enumeration attributes = session.getAttributeNames();
+        while (attributes.hasMoreElements()) {
+            session.removeAttribute((String) attributes.nextElement());
         }
         session.invalidate();
 
