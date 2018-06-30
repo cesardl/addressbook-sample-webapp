@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.7.13, for Win32 (AMD64)
 --
--- Host: 127.0.0.1    Database: address_book
+-- Host: localhost    Database: address_book
 -- ------------------------------------------------------
 -- Server version	5.7.13-log
 
@@ -14,6 +14,14 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Current Database: `address_book`
+--
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `address_book` /*!40100 DEFAULT CHARACTER SET utf8 */;
+
+USE `address_book`;
 
 --
 -- Table structure for table `contacto`
@@ -75,7 +83,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'admin','*68AB655AF1DDBDB3179671D16EB5B698564AC722','ADMIN','2018-06-27 05:02:23'),(2,'cesardl','*6BB4837EB74329105EE4568DDA7DC67ED2CA2AD9','USER','2018-06-27 04:48:35');
+INSERT INTO `usuario` VALUES (1,'admin','*68AB655AF1DDBDB3179671D16EB5B698564AC722','ADMIN','2018-06-30 02:58:08'),(2,'cesardl','*6BB4837EB74329105EE4568DDA7DC67ED2CA2AD9','USER','2018-06-30 04:43:54');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -88,4 +96,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-06-27  0:06:34
+-- Dump completed on 2018-06-29 23:52:48
