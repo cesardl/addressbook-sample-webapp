@@ -11,6 +11,9 @@ cache:
   directories:
     - $HOME/.m2
 
+git:
+  depth: 10
+
 before_install:
   - mysql -u travis < data/address_book_schema.sql
 
