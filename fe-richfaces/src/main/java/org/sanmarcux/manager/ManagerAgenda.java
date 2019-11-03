@@ -23,13 +23,14 @@ public class ManagerAgenda extends AbstractManagerAgenda {
     private static final Logger LOG = LoggerFactory.getLogger(ManagerAgenda.class);
 
     public void cargarImagen(UploadEvent event) {
+        UploadItem item = event.getUploadItem();
+        this.setB_mime(item.getContentType());
+        File file = item.getFile();
         try {
-            UploadItem item = event.getUploadItem();
-
-            this.setB_mime(item.getContentType());
-
-            File file = item.getFile();
             contacto.setConAvatar(new SerialBlob(java.nio.file.Files.readAllBytes(file.toPath())));
+        } catch (IOException | SQLException e) {
+            LOG.error("error al cargar la imagen", e);
+        } finally {
             boolean deleted = file.delete();
 
             if (deleted) {
@@ -37,8 +38,6 @@ public class ManagerAgenda extends AbstractManagerAgenda {
             } else {
                 LOG.warn("La imagen no pudo ser borrada");
             }
-        } catch (IOException | SQLException e) {
-            LOG.error("error al cargar la imagen", e);
         }
     }
 

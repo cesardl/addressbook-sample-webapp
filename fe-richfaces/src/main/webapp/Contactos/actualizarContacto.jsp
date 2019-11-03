@@ -86,7 +86,7 @@
                         <td><rich:fileUpload id="avatar" maxFilesQuantity="1"
                                              listHeight="58px" listWidth="300px"
                                              immediateUpload="true"
-                                             acceptedTypes="jpg, jpeg, gif, JPG, JPEG ,GIF"
+                                             acceptedTypes="jpg,jpeg,gif,png,JPG,JPEG,GIF,PNG"
                                              fileUploadListener="#{managerAgenda.cargarImagen}">
                             <a4j:support event="onuploadcomplete" reRender="avatarContacto"/>
                         </rich:fileUpload></td>

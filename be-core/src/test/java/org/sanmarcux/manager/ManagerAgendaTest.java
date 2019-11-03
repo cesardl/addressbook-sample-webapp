@@ -59,7 +59,7 @@ public class ManagerAgendaTest {
 
         List<Contacto> result = addressBook.getLista();
         assertFalse(result.isEmpty());
-        assertEquals(29, result.size());
+        assertEquals(30, result.size());
     }
 
     @Test

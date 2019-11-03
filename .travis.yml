@@ -1,3 +1,4 @@
+dist: trusty
 language: java
 
 jdk:
@@ -7,12 +8,19 @@ addons:
   apt:
     update: true
 
+  sonarcloud:
+    organization: "cesardl-github" # the key of the org you chose at step #3
+    token:
+      secure: $SONAR_TOKEN # encrypted value of your token
+
+git:
+  depth: false
+
 cache:
   directories:
     - $HOME/.m2
-
-git:
-  depth: 10
+    - $HOME/.sonar/cache
+    - $HOME/.sonarscanner
 
 before_install:
   - mysql -u travis < data/address_book_schema.sql
@@ -23,7 +31,8 @@ before_script:
   - ./cc-test-reporter before-build
 
 script:
-  - mvn clean verify
+  - mvn -B verify
+  - if [ "$TRAVIS_BRANCH" = "master" ]; then sonar-scanner; fi
 
 after_script:
   - export SUITE=be-core

@@ -41,17 +41,24 @@ public class ContactoDAOImpl implements ContactoDAO {
         }
     }
 
-    public List<Contacto> listarContactos(int usuId, String dato) {
-        String sql = "SELECT con_id, con_codigo, con_nombres, con_telefono, con_email, con_cumpleanos"
-                + " FROM contacto WHERE usu_id = ? AND con_nombres LIKE ?";
+    public List<Contacto> listarContactos(final int usuId, final Usuario.Role role, final String dato) {
+        String sql = "SELECT con_id, con_codigo, con_nombres, con_telefono, con_email, con_cumpleanos FROM contacto" +
+                " WHERE con_nombres LIKE ?";
+
+        if (Usuario.Role.USER.equals(role)) {
+            sql = sql + " AND usu_id = ?";
+        }
 
         LOG.debug(sql);
 
         try (Connection connection = ConnectionPool.openConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
-            ps.setInt(1, usuId);
-            ps.setString(2, "%".concat(dato).concat("%"));
+            ps.setString(1, "%".concat(dato).concat("%"));
+
+            if (Usuario.Role.USER.equals(role)) {
+                ps.setInt(2, usuId);
+            }
 
             return listContacts(ps);
         } catch (SQLException e) {

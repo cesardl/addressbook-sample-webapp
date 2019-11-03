@@ -12,21 +12,21 @@ Contiene b&aacute;sicamente un CRUD de contactos relacionado al usuario logueado
 
 Considerar el siguiente comando con el que se hizo un backup de la base de datos.
 
-`
-mysqldump -u <user> -p -B address_book > address_book_schema.sql
-`
+```sh
+mysqldump -u root -p -B --hex-blob --routines address_book > address_book_schema.sql
+```
 
 Me aprovech&eacute; de una base de datos de ejemplo llamada **_Employees_** en donde insert&eacute; cerca de 30k registros como contactos. Ahora la aplicaci&oacute;n tiene problemas  de performance que deben ser corregidos.
 
 Esta es la query con la que obtuve los datos desde el schema _Employees_.
 
-`
+```sql
 insert into address_book.contacto(con_nombres, con_cumpleanos, usu_id)
 select concat(first_name, ' ', last_name), hire_date, 1 from employees;
-`
+```
 
 El actual backup de la base de datos ya lleva los passwords asegurados, inicialmente fueron creados con la siguiente query:
 
-`
+```sql
 INSERT INTO usuario VALUES (1,'admin', PASSWORD('4dm1n')),(2,'cesardl',PASSWORD('123456'));
-`
+```
