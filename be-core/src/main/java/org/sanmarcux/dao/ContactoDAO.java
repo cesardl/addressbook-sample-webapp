@@ -10,7 +10,7 @@ public interface ContactoDAO {
 
     List<Contacto> listarContactos(int usuId, Usuario.Role role);
 
-    List<Contacto> listarContactos(int usuId, String dato);
+    List<Contacto> listarContactos(int usuId, Usuario.Role role, String dato);
 
     Contacto seleccionarContacto(int idContacto);
 

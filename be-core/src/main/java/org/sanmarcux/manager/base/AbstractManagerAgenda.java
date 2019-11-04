@@ -241,7 +241,7 @@ public abstract class AbstractManagerAgenda {
 
         try {
             ContactoDAO dao = (ContactoDAO) Class.forName("org.sanmarcux.dao.impl.ContactoDAOImpl").newInstance();
-            List<Contacto> contacts = dao.listarContactos(getUser().getUsuId(), suggest.toString());
+            List<Contacto> contacts = dao.listarContactos(getUser().getUsuId(), getUser().getRole(), suggest.toString());
 
             LOG.info("Se obtuvieron {} contacts en la búsqueda de: '{}'", contacts.size(), suggest);
             for (Contacto aLTmp : contacts) {

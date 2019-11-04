@@ -5,18 +5,14 @@
 package org.sanmarcux.util;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 
 /**
  * @author cesardl
  */
 public class Utilities {
-
-    private static final Logger LOG = LoggerFactory.getLogger(Utilities.class);
 
     /**
      * Metodo que devuelve un java.sql.Date
@@ -55,12 +51,7 @@ public class Utilities {
     }
 
     public static String buildMySQLPassword(final String plainText) {
-        try {
-            byte[] utf8 = plainText.getBytes("UTF-8");
-            return "*" + DigestUtils.sha1Hex(DigestUtils.sha1(utf8)).toUpperCase();
-        } catch (UnsupportedEncodingException e) {
-            LOG.error(e.getMessage(), e);
-            return null;
-        }
+        byte[] utf8 = plainText.getBytes(StandardCharsets.UTF_8);
+        return "*" + DigestUtils.sha1Hex(DigestUtils.sha1(utf8)).toUpperCase();
     }
 }
