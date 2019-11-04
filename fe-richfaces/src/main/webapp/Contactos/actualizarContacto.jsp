@@ -43,7 +43,7 @@
                                 <div align="center">
                                     <h:outputText value="No hay imagen cargada"
                                                   rendered="#{managerAgenda.contacto.conAvatar==null}"/>
-                                    <a4j:mediaOutput element="img" mimeType="#{managerAgenda.b_mime}"
+                                    <a4j:mediaOutput element="img" mimeType="#{managerAgenda.avatarMimeType}"
                                                      createContent="#{managerAgenda.avatarContacto}"
                                                      value="vAvatar" cacheable="false"
                                                      style="width:100px; height:100px;"

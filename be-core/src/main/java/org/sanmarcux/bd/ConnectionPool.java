@@ -11,6 +11,9 @@ public class ConnectionPool {
 
     private static DataSource dataSource;
 
+    private ConnectionPool() {
+    }
+
     static {
         ResourceBundle rb = ResourceBundle.getBundle("org.sanmarcux.bd.jdbc");
         BasicDataSource basicDataSource = new BasicDataSource();

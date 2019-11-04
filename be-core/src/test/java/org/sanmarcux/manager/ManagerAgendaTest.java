@@ -26,7 +26,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 @PrepareForTest(fullyQualifiedNames = "javax.faces.context.*")
 public class ManagerAgendaTest {
 
-    private class ManagerAgendaImpl extends AbstractManagerAgenda {
+    private static class ManagerAgendaImpl extends AbstractManagerAgenda {
     }
 
     private AbstractManagerAgenda addressBook = new ManagerAgendaImpl();

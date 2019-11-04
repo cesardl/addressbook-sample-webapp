@@ -14,6 +14,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.*;
+import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,22 +23,25 @@ public class ManagerAgenda extends AbstractManagerAgenda {
 
     private static final Logger LOG = LoggerFactory.getLogger(ManagerAgenda.class);
 
-    public void cargarImagen(UploadEvent event) {
+    public void cargarImagen(final UploadEvent event) {
+        LOG.debug("Uploading avatar [{}]", event.getPhaseId());
+
         UploadItem item = event.getUploadItem();
-        this.setB_mime(item.getContentType());
+        avatarMimeType = item.getContentType();
         File file = item.getFile();
+
         try {
-            contacto.setConAvatar(new SerialBlob(java.nio.file.Files.readAllBytes(file.toPath())));
-        } catch (IOException | SQLException e) {
-            LOG.error("error al cargar la imagen", e);
-        } finally {
-            boolean deleted = file.delete();
+            contacto.setConAvatar(new SerialBlob(Files.readAllBytes(file.toPath())));
+
+            boolean deleted = Files.deleteIfExists(file.toPath());
 
             if (deleted) {
-                LOG.debug("Imagen temporal fue borrada {}", file.getAbsoluteFile());
+                LOG.info("Imagen temporal fue borrada {}", file.getAbsoluteFile());
             } else {
-                LOG.warn("La imagen no pudo ser borrada");
+                LOG.warn("Imagen temporal no pudo ser borrada {}", file.getAbsoluteFile());
             }
+        } catch (IOException | SQLException e) {
+            LOG.error("error al cargar la imagen", e);
         }
     }
 
@@ -70,28 +74,26 @@ public class ManagerAgenda extends AbstractManagerAgenda {
     }
 
     public void reporteContactos(OutputStream out, Object data) throws IOException {
-        if (data != null) {
-            if (data.equals("allContacts")) {
-                String jasperPath = "/reportes/report_all_contacts.jasper";
+        if (data != null && data.equals("allContacts")) {
+            String jasperPath = "/reportes/report_all_contacts.jasper";
 
-                Map<String, Integer> parameters = new HashMap<>();
-                parameters.put("USU_ID", getUser().getUsuId());
+            Map<String, Integer> parameters = new HashMap<>();
+            parameters.put("USU_ID", getUser().getUsuId());
 
-                InputStream input = new ByteArrayInputStream(getReportBytes(jasperPath, parameters));
+            InputStream input = new ByteArrayInputStream(getReportBytes(jasperPath, parameters));
 
-                int size = input.available();
-                byte[] pdf = new byte[size];
+            int size = input.available();
+            byte[] pdf = new byte[size];
 
-                int read = input.read(pdf);
+            int read = input.read(pdf);
 
-                LOG.debug("Se leyeron {} bytes para la generación del reporte PDF de contactos", read);
+            LOG.debug("Se leyeron {} bytes para la generación del reporte PDF de contactos", read);
 
-                out.write(pdf);
+            out.write(pdf);
 
-                input.close();
-                out.flush();
-                out.close();
-            }
+            input.close();
+            out.flush();
+            out.close();
         }
     }
 }

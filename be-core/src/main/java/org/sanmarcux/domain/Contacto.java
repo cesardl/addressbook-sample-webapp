@@ -19,7 +19,7 @@ public class Contacto implements Serializable {
     private String conCodigo;
     private String conNombres;
     private String conTelefono;
-    private Blob conAvatar;
+    private transient Blob conAvatar;
     private String conEmail;
     private Date conCumpleanos;
     private String conStrcumpl;

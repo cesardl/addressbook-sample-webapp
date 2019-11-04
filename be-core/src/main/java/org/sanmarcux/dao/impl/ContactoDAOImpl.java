@@ -218,8 +218,8 @@ public class ContactoDAOImpl implements ContactoDAO {
 
         LOG.debug(sql);
 
-        try (Connection connection = ConnectionPool.openConnection()) {
-            PreparedStatement ps = connection.prepareStatement(sql);
+        try (Connection connection = ConnectionPool.openConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
 
             ps.setInt(1, idContacto);
 

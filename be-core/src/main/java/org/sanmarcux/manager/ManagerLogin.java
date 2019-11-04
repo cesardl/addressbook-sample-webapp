@@ -77,6 +77,6 @@ public class ManagerLogin {
         }
         session.invalidate();
 
-        return "TO_LOGIN";
+        return NAVIGATION_TO_LOGIN;
     }
 }

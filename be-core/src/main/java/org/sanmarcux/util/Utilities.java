@@ -12,7 +12,10 @@ import java.sql.Date;
 /**
  * @author cesardl
  */
-public class Utilities {
+public final class Utilities {
+
+    private Utilities() {
+    }
 
     /**
      * Metodo que devuelve un java.sql.Date

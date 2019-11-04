@@ -1,4 +1,4 @@
-<%-- 
+<%--
     Document   : buscaContacto
     Created on : 10/03/2010, 09:32:03 AM
     Author     : cesardl
@@ -49,8 +49,7 @@
                                 + "</i></b>, digite el nombre del contacto a buscar : ");
                     %>
                     <h:panelGroup>
-                        <h:inputText id="suggest" styleClass="input"
-                                     value="#{managerAgenda.sugstring}"/>
+                        <h:inputText id="suggest" styleClass="input" value="#{managerAgenda.suggestedString}"/>
                         <a4j:jsFunction name="loadAvatar" actionListener="#{managerAgenda.loadAvatar}"
                                         reRender="avatCont"/>
                         <rich:suggestionbox id="suggestionCon" height="150" width="300"
@@ -82,18 +81,18 @@
                     <table>
                         <tr>
                             <td colspan="2" width="70%">
-                                <h:inputHidden id="idCont" value="#{managerAgenda.sug_id}"/>
-                                <f:param id="sugContactId" value="#{managerAgenda.sug_id}"/></td>
+                                <h:inputHidden id="idCont" value="#{managerAgenda.suggestedContactId}"/>
+                                <f:param id="sugContactId" value="#{managerAgenda.suggestedContactId}"/></td>
                             <td rowspan="4">
                                 <rich:panel id="avatCont">
                                     <div align="center">
                                         <h:outputText value="No hay imagen encontrada"
-                                                      rendered="#{managerAgenda.sug_avatar==null}"/>
+                                                      rendered="#{managerAgenda.suggestedContactAvatar==null}"/>
                                         <a4j:mediaOutput element="img" mimeType="image/jpeg"
                                                          createContent="#{managerAgenda.avatarContacto}"
                                                          value="sugAvatar" cacheable="false"
                                                          style="width:100px; height:100px;"
-                                                         rendered="#{managerAgenda.sug_avatar!=null}">
+                                                         rendered="#{managerAgenda.suggestedContactAvatar!=null}">
                                             <f:param value="#{managerAgenda.timeStamp}" name="time"/>
                                         </a4j:mediaOutput>
                                     </div>
