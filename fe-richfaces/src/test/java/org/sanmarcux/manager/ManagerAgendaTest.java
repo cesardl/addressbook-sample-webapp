@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class ManagerAgendaTest {
 
-    private AbstractManagerAgenda addressBook = new ManagerAgenda();
+    private final AbstractManagerAgenda addressBook = new ManagerAgenda();
 
     @Test
     public void getTitleTest() {

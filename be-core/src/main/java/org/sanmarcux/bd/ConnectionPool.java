@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 
 public class ConnectionPool {
 
-    private static DataSource dataSource;
+    private final static DataSource dataSource;
 
     private ConnectionPool() {
     }
@@ -18,7 +18,6 @@ public class ConnectionPool {
         ResourceBundle rb = ResourceBundle.getBundle("org.sanmarcux.bd.jdbc");
         BasicDataSource basicDataSource = new BasicDataSource();
 
-        basicDataSource.setDriverClassName(rb.getString("jdbc.driverClassName"));
         basicDataSource.setUrl(rb.getString("jdbc.url"));
         basicDataSource.setUsername(rb.getString("jdbc.username"));
         basicDataSource.setPassword(rb.getString("jdbc.password"));

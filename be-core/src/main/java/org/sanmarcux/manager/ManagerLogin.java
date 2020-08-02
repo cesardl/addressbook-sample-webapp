@@ -5,6 +5,7 @@
 package org.sanmarcux.manager;
 
 import org.sanmarcux.dao.UsuarioDAO;
+import org.sanmarcux.dao.impl.UsuarioDAOImpl;
 import org.sanmarcux.domain.Usuario;
 
 import javax.faces.context.ExternalContext;
@@ -46,34 +47,30 @@ public class ManagerLogin {
     }
 
     public String validarUsuario() {
-        try {
-            UsuarioDAO dao = (UsuarioDAO) Class.forName("org.sanmarcux.dao.impl.UsuarioDAOImpl").newInstance();
-            Usuario user = dao.getUsuario(this.usuario);
+        UsuarioDAO dao = new UsuarioDAOImpl();
+        Usuario user = dao.getUsuario(this.usuario);
 
-            if (user == null) {
-                this.setError(true);
-                return NAVIGATION_TO_LOGIN;
-            } else {
-                dao.actualizarUltimoAcceso(user.getUsuId());
-
-                ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-                HttpSession session = (HttpSession) context.getSession(false);
-                session.setAttribute("usuario", user);
-                return "TO_ADDRESS_BOOK";
-            }
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
+        if (user == null) {
             this.setError(true);
             return NAVIGATION_TO_LOGIN;
+        } else {
+            dao.actualizarUltimoAcceso(user.getUsuId());
+
+            ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+            HttpSession session = (HttpSession) context.getSession(false);
+            session.setAttribute("usuario", user);
+            return "TO_ADDRESS_BOOK";
         }
     }
 
+    @SuppressWarnings("unchecked")
     public String cerrarSesion() {
         ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
         HttpSession session = (HttpSession) context.getSession(true);
 
-        Enumeration attributes = session.getAttributeNames();
+        Enumeration<String> attributes = session.getAttributeNames();
         while (attributes.hasMoreElements()) {
-            session.removeAttribute((String) attributes.nextElement());
+            session.removeAttribute(attributes.nextElement());
         }
         session.invalidate();
 
