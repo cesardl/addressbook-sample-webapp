@@ -31,7 +31,6 @@ before_script:
   - ./cc-test-reporter before-build
 
 script:
-  - echo "current branch $TRAVIS_BRANCH"
   - mvn -B verify
   - if [ "$TRAVIS_BRANCH" = "master" ]; then sonar-scanner; fi
 
