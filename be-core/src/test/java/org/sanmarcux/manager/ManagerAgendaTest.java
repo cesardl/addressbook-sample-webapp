@@ -8,14 +8,18 @@ import org.sanmarcux.PojoFake;
 import org.sanmarcux.domain.Contacto;
 import org.sanmarcux.manager.base.AbstractManagerAgenda;
 
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIParameter;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 /**
  * Created on 29/06/2018.
@@ -29,17 +33,44 @@ public class ManagerAgendaTest {
     private static class ManagerAgendaImpl extends AbstractManagerAgenda {
     }
 
-    private AbstractManagerAgenda addressBook = new ManagerAgendaImpl();
+    private final AbstractManagerAgenda addressBook = new ManagerAgendaImpl();
 
     @Test
-    public void getTitleTest() {
-        String title = "some title";
+    public void preparingForInsertContactTest() {
+        String result = addressBook.nuevoContacto();
 
-        addressBook.setTitulo(title);
+        assertNotNull(addressBook.getContacto().getConCodigo());
+        assertTrue(addressBook.getContacto().getConNombres().isEmpty());
+        assertEquals("<strong>Insertar contacto</strong>", addressBook.getTitulo());
+        assertEquals("TO_EDIT", result);
+    }
 
-        String result = addressBook.getTitulo();
+    @Test
+    public void preparingForEditContactTest() {
+        // Invoking action
+        String result = addressBook.editarContacto();
 
-        assertEquals("<strong>some title</strong>", result);
+        assertNotNull(addressBook.getContacto().getConCodigo());
+        assertEquals("<strong>Editar contacto</strong>", addressBook.getTitulo());
+        assertEquals("TO_EDIT", result);
+
+        // Invoking actionListener
+        ActionEvent actionEvent = mock(ActionEvent.class);
+        UIComponent uiComponent = mock(UIComponent.class);
+        UIParameter uiParameter = mock(UIParameter.class);
+
+        when(actionEvent.getComponent()).thenReturn(uiComponent);
+        when(uiComponent.findComponent("contactId")).thenReturn(uiParameter);
+        when(uiParameter.getValue()).thenReturn(11);
+
+        addressBook.seleccionarContacto(actionEvent);
+
+        assertFalse(addressBook.getContacto().getConNombres().isEmpty());
+        assertNotNull(addressBook.getContacto().getConTelefono());
+        assertNotNull(addressBook.getContacto().getConAvatar());
+        assertNotNull(addressBook.getContacto().getConEmail());
+        assertNotNull(addressBook.getContacto().getConCumpleanos());
+        assertNotNull(addressBook.getContacto().getConStrcumpl());
     }
 
     private HttpSession mockSession() {

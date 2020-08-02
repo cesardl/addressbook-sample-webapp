@@ -14,7 +14,7 @@ import static org.junit.Assert.fail;
  */
 public class EmailValidatorTest {
 
-    private EmailValidator validator = new EmailValidator();
+    private final EmailValidator validator = new EmailValidator();
 
     @Test
     public void validateCorrectEmail() {

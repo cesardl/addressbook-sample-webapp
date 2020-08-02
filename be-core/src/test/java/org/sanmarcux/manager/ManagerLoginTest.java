@@ -22,7 +22,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 @PrepareForTest(fullyQualifiedNames = "javax.faces.context.*")
 public class ManagerLoginTest {
 
-    private ManagerLogin manager = new ManagerLogin();
+    private final ManagerLogin manager = new ManagerLogin();
 
     @Test
     public void successLoginTest() {

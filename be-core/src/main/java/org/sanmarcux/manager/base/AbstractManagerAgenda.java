@@ -6,6 +6,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.sanmarcux.bd.ConnectionPool;
 import org.sanmarcux.dao.ContactoDAO;
+import org.sanmarcux.dao.impl.ContactoDAOImpl;
 import org.sanmarcux.domain.Contacto;
 import org.sanmarcux.domain.Usuario;
 import org.sanmarcux.util.Utilities;
@@ -39,7 +40,8 @@ public abstract class AbstractManagerAgenda {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractManagerAgenda.class);
 
     private static final String NAVIGATION_TO_EDIT = "TO_EDIT";
-    private static final String CONTACT_DAO_CLASS_NAME = "org.sanmarcux.dao.impl.ContactoDAOImpl";
+
+    private final ContactoDAO contactoDAO = new ContactoDAOImpl();
 
     protected Contacto contacto;
     /*Para el manejo de imagenes*/
@@ -72,13 +74,7 @@ public abstract class AbstractManagerAgenda {
         Usuario user = getUser();
         LOG.info("Obteniendo lista de contactos del usuario {} con rol {}", user.getUsuId(), user.getRole());
 
-        try {
-            ContactoDAO cm = (ContactoDAO) Class.forName(CONTACT_DAO_CLASS_NAME).newInstance();
-            lista = cm.listarContactos(user.getUsuId(), user.getRole());
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
-            LOG.error("Error al cargar la lista de contactos", ex);
-            lista = new ArrayList<>();
-        }
+        lista = contactoDAO.listarContactos(user.getUsuId(), user.getRole());
 
         LOG.info("Se obtuvieron {} contactos del usuario {}", lista.size(), user.getUsuUsuario());
         return lista;
@@ -161,38 +157,26 @@ public abstract class AbstractManagerAgenda {
 
     private String obtenerCodigo() {
         LOG.info("Generando código aleatorio para nuevo contacto");
-        try {
-            ContactoDAO cm = (ContactoDAO) Class.forName(CONTACT_DAO_CLASS_NAME).newInstance();
-            return cm.generarCodigoContacto();
-        } catch (IllegalAccessException | ClassNotFoundException | InstantiationException e) {
-            LOG.error("Error al llamar al metodo insertarContacto {}", e.getMessage(), e);
-            return "";
-        }
+
+        return contactoDAO.generarCodigoContacto();
     }
 
     private void insertarContacto() {
         int userId = getUser().getUsuId();
         LOG.info("Registrando nuevo contacto para el usuario {}", userId);
-        try {
-            ContactoDAO cm = (ContactoDAO) Class.forName(CONTACT_DAO_CLASS_NAME).newInstance();
-            contacto.setUsuId(userId);
-            cm.insertarContacto(this.contacto);
-        } catch (IllegalAccessException | ClassNotFoundException | InstantiationException e) {
-            LOG.error("Error al llamar al metodo insertarContacto {}", e.getMessage(), e);
-        }
+
+        contacto.setUsuId(userId);
+        contactoDAO.insertarContacto(this.contacto);
     }
 
     private void actualizarContacto() {
         int userId = getUser().getUsuId();
         LOG.info("Actualizando contacto {} para el usuario {}", this.editar, userId);
-        try {
-            this.contacto.setConId(this.editar);
-            this.contacto.setUsuId(userId);
-            ContactoDAO cm = (ContactoDAO) Class.forName(CONTACT_DAO_CLASS_NAME).newInstance();
-            cm.actualizarContacto(this.getContacto());
-        } catch (IllegalAccessException | ClassNotFoundException | InstantiationException e) {
-            LOG.error("Error al llamar al metodo actualizarContacto {}", e.getMessage(), e);
-        }
+
+        this.contacto.setConId(this.editar);
+        this.contacto.setUsuId(userId);
+
+        contactoDAO.actualizarContacto(this.getContacto());
     }
 
     private boolean validar() {
@@ -223,15 +207,9 @@ public abstract class AbstractManagerAgenda {
         UIParameter component = (UIParameter) actionEvent.getComponent().findComponent("contactId");
         this.editar = Utilities.toInteger(component.getValue());
 
-        try {
-            ContactoDAO cm = (ContactoDAO) Class.forName(CONTACT_DAO_CLASS_NAME).newInstance();
-            this.setContacto(cm.seleccionarContacto(this.editar));
-            if (Utilities.lengthOfString(this.getContacto().getConCodigo()) < 4) {
-                this.getContacto().setConCodigo(cm.generarCodigoContacto());
-            }
-        } catch (IllegalAccessException | ClassNotFoundException | InstantiationException e) {
-            LOG.error("Error al llamar al metodo seleccionarContacto {}", e.getMessage(), e);
-            this.setContacto(new Contacto());
+        this.setContacto(contactoDAO.seleccionarContacto(this.editar));
+        if (Utilities.lengthOfString(this.getContacto().getConCodigo()) < 4) {
+            this.getContacto().setConCodigo(contactoDAO.generarCodigoContacto());
         }
     }
 
@@ -242,51 +220,36 @@ public abstract class AbstractManagerAgenda {
 
         List<Contacto> result = new ArrayList<>();
 
-        try {
-            ContactoDAO dao = (ContactoDAO) Class.forName(CONTACT_DAO_CLASS_NAME).newInstance();
-            List<Contacto> contacts = dao.listarContactos(getUser().getUsuId(), getUser().getRole(), suggest.toString());
+        List<Contacto> contacts = contactoDAO.listarContactos(getUser().getUsuId(), getUser().getRole(), suggest.toString());
 
-            LOG.info("Se obtuvieron {} contacts en la búsqueda de: '{}'", contacts.size(), suggest);
-            for (Contacto aLTmp : contacts) {
-                Contacto c = new Contacto();
-                c.setConId(aLTmp.getConId());
-                c.setConCodigo(aLTmp.getConCodigo());
-                c.setConNombres(aLTmp.getConNombres());
-                c.setConEmail(aLTmp.getConEmail());
-                c.setConStrcumpl(aLTmp.getConStrcumpl());
-                c.setConAvatar(aLTmp.getConAvatar());
+        LOG.info("Se obtuvieron {} contacts en la búsqueda de: '{}'", contacts.size(), suggest);
+        for (Contacto aLTmp : contacts) {
+            Contacto c = new Contacto();
+            c.setConId(aLTmp.getConId());
+            c.setConCodigo(aLTmp.getConCodigo());
+            c.setConNombres(aLTmp.getConNombres());
+            c.setConEmail(aLTmp.getConEmail());
+            c.setConStrcumpl(aLTmp.getConStrcumpl());
+            c.setConAvatar(aLTmp.getConAvatar());
 
-                result.add(c);
-            }
-            return result;
-        } catch (IllegalAccessException | ClassNotFoundException | InstantiationException e) {
-            LOG.error("Error al llamar al metodo autocomplete {}", e.getMessage(), e);
-            return Collections.emptyList();
+            result.add(c);
         }
+        return result;
     }
 
     public void eliminarContacto(ActionEvent event) throws IllegalAccessException, ClassNotFoundException, InstantiationException {
         LOG.debug("Entra a eliminar el contacto");
-        try {
-            UIParameter parameter = (UIParameter) event.getComponent().findComponent("contactId");
-            int id = Utilities.toInteger(parameter.getValue());
-            ContactoDAO dao = (ContactoDAO) Class.forName(CONTACT_DAO_CLASS_NAME).newInstance();
-            dao.eliminarContacto(id);
-        } catch (IllegalAccessException | ClassNotFoundException | InstantiationException e) {
-            LOG.error("Error al llamar al metodo eliminarContacto {}", e.getMessage(), e);
-            throw e;
-        }
+
+        UIParameter parameter = (UIParameter) event.getComponent().findComponent("contactId");
+        int id = Utilities.toInteger(parameter.getValue());
+        contactoDAO.eliminarContacto(id);
     }
 
     public void loadAvatar(ActionEvent event) {
-        try {
-            UIParameter parameter = (UIParameter) event.getComponent().findComponent("sugContactId");
-            int id = Utilities.toInteger(parameter.getValue());
-            ContactoDAO dao = (ContactoDAO) Class.forName(CONTACT_DAO_CLASS_NAME).newInstance();
-            this.setSuggestedContactAvatar(dao.seleccionarAvatarContacto(id));
-        } catch (IllegalAccessException | ClassNotFoundException | InstantiationException e) {
-            LOG.error("Error al llamar al metodo loadAvatar {}", e.getMessage(), e);
-        }
+        UIParameter parameter = (UIParameter) event.getComponent().findComponent("sugContactId");
+        int id = Utilities.toInteger(parameter.getValue());
+
+        this.setSuggestedContactAvatar(contactoDAO.seleccionarAvatarContacto(id));
     }
 
     public void avatarContacto(final OutputStream stream, final Object data) throws IOException, SQLException {
