@@ -19,8 +19,6 @@ git:
 cache:
   directories:
     - $HOME/.m2
-    - $HOME/.sonar/cache
-    - $HOME/.sonarscanner
 
 before_install:
   - mysql -u travis < data/address_book_schema.sql
