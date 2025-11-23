@@ -10,6 +10,12 @@ Inicialmente eran proyectos NetBeans basado en Java 6, los he refactorizado y ah
 
 Contiene b&aacute;sicamente un CRUD de contactos relacionado al usuario logueado. Soporta el almacenamiento de im&aacute;genes en la base de datos y la generaci&oacute;n de reportes PDF con JasperReports.
 
+Para levantar la BD con docker, usar esta sentencia:
+
+```
+docker run --name mysql-v5_7 -p 3310:3306 --restart on-failure -e MYSQL_DATABASE=address_book -e MYSQL_ROOT_PASSWORD=rootroot -e TZ=America/Lima -d mysql:5.7.44 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+```
+
 Considerar el siguiente comando con el que se hizo un backup de la base de datos.
 
 ```sh
