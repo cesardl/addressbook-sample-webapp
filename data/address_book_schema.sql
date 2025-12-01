@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.13, for Win32 (AMD64)
+-- MySQL dump 10.13  Distrib 5.7.44, for Linux (x86_64)
 --
 -- Host: localhost    Database: address_book
 -- ------------------------------------------------------
--- Server version	5.6.33
+-- Server version	5.7.44
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -32,7 +32,7 @@ DROP TABLE IF EXISTS `contacto`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `contacto` (
   `con_id` int(11) NOT NULL AUTO_INCREMENT,
-  `con_codigo` varchar(5) CHARACTER SET latin1 NOT NULL,
+  `con_codigo` varchar(12) CHARACTER SET latin1 NOT NULL,
   `con_nombres` varchar(250) CHARACTER SET latin1 NOT NULL,
   `con_telefono` varchar(9) CHARACTER SET latin1 DEFAULT NULL,
   `con_avatar` mediumblob,
@@ -133,4 +133,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-11-03 20:49:51
+-- Dump completed on 2025-12-01 15:53:44
