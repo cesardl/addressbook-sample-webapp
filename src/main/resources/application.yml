@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: address-book
+  datasource:
+    url: jdbc:mysql://localhost:3310/address_book?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=America/Lima
+    username: root
+    password: rootroot
+    hikari:
+      connection-test-query: SELECT 1
+  thymeleaf:
+    cache: false
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org.sanmarcux.addressbook: INFO

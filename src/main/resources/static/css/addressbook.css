@@ -1,0 +1,21 @@
+body {
+    background-color: #f5f6f8;
+}
+
+.avatar-thumb {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    background-color: #e9ecef;
+}
+
+.avatar-preview {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    background-color: #e9ecef;
+}
+
+table#tablaContactos td {
+    vertical-align: middle;
+}

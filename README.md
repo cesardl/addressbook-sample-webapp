@@ -1,62 +1,86 @@
-Address Book [![Build Status](https://travis-ci.org/cesardl/addressbook-sample-webapp.svg?branch=master)](https://travis-ci.org/cesardl/addressbook-sample-webapp) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=org.sanmarcux.samples.jsf.address-book&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=org.sanmarcux.samples.jsf.address-book) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=org.sanmarcux.samples.jsf.address-book&metric=coverage)](https://sonarcloud.io/dashboard?id=org.sanmarcux.samples.jsf.address-book) [![Maintainability](https://api.codeclimate.com/v1/badges/ad8b96409b766ee88044/maintainability)](https://codeclimate.com/github/cesardl/addressbook-sample-webapp/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/ad8b96409b766ee88044/test_coverage)](https://codeclimate.com/github/cesardl/addressbook-sample-webapp/test_coverage)
-===========
+Address Book
+============
 
-AddressBook es un proyecto de ejemplo que realic&eacute; all&aacute; por el a&ntilde;o 2010. Utiliza JSF para la parte visual y consta de dos implementaciones
+AddressBook es un proyecto de ejemplo que realicé allá por el año 2010. En su origen fueron
+dos proyectos NetBeans (Java 6) con **JSF** y frontends **RichFaces** e **IceFaces**, luego
+refactorizados a un build multimódulo con Maven.
 
-1. Aplicaci&oacute;n con Richfaces
-2. Aplicaci&oacute;n con Icefaces
+Esta versión moderniza el stack a **Spring Boot 3 (Java 17)** con un único módulo:
 
-Inicialmente eran proyectos NetBeans basado en Java 6, los he refactorizado y ahora son multim&oacute;dulos basados en Maven.
+- **Spring MVC + Thymeleaf** para las vistas (server-side rendering).
+- **Bootstrap 5 + jQuery + DataTables** (procesamiento del lado servidor) para el listado.
+- **JdbcTemplate** para la persistencia (sin ORM), sobre **MySQL 8**.
+- **Spring Security** con un `PasswordEncoder` que reproduce el formato legado de MySQL
+  (`*SHA1(SHA1(pwd))`), de modo que los usuarios de la base de datos existente siguen
+  autenticándose sin migrar datos.
 
-Contiene b&aacute;sicamente un CRUD de contactos relacionado al usuario logueado. Soporta el almacenamiento de im&aacute;genes en la base de datos y la generaci&oacute;n de reportes PDF con JasperReports.
+Contiene un CRUD de contactos asociado al usuario logueado, con autocompletar/búsqueda,
+avatares almacenados en la base de datos (BLOB) y control de acceso por rol
+(ADMIN ve todos los contactos, USER sólo los suyos).
 
-Para levantar la BD con docker, usar esta sentencia:
+> La generación de reportes PDF con JasperReports de la versión original fue retirada.
 
-```
-docker run --name mysql-v5_7 -p 3310:3306 --restart on-failure -e MYSQL_DATABASE=address_book -e MYSQL_ROOT_PASSWORD=rootroot -e TZ=America/Lima -d mysql:5.7.44 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-```
+## Requisitos
 
-Considerar el siguiente comando con el que se hizo un backup de la base de datos.
+- JDK 17
+- Maven 3.9+
+- Docker (para levantar MySQL localmente)
+
+## Base de datos
+
+Levantar MySQL 8 con Docker:
 
 ```sh
-mysqldump -u root -p -B --hex-blob --routines address_book > address_book_schema.sql
+docker run --name mysql-v8 -p 3310:3306 --restart on-failure \
+  -e MYSQL_DATABASE=address_book -e MYSQL_ROOT_PASSWORD=rootroot -e TZ=America/Lima \
+  -d mysql:8.0 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 ```
 
-Me aprovech&eacute; de una base de datos de ejemplo llamada **_Employees_** en donde insert&eacute; cerca de 30k registros como contactos. Ahora la aplicaci&oacute;n tiene problemas  de performance que deben ser corregidos.
+Cargar el esquema y los datos de ejemplo:
 
-Esta es la query con la que obtuve los datos desde el schema _Employees_.
-
-```sql
-insert into address_book.usuario(usu_usuario, usu_password)
-select p.`name`, PASSWORD(p.`name`) from crud.tbl_person p;
+```sh
+docker exec -i mysql-v8 mysql -uroot -prootroot address_book < data/address_book_schema.sql
 ```
 
-```sql
-SET @random_chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-SET @char_length = LENGTH(@random_chars);
+El dataset de ejemplo tiene ~30k contactos (tomados de la base de datos de ejemplo _Employees_),
+por lo que el listado usa paginación del lado servidor de DataTables para responder de forma ágil.
 
--- Configuration for random domains
-SET @domains_list = '@latin.com,@llajoo.com,@email.com,@correito.com.ar,@employees.dev,@correo.com.mx';
-SET @num_domains = 6;
+La conexión por defecto (`localhost:3310/address_book`, usuario `root`) se configura en
+`src/main/resources/application.yml`.
 
-insert into address_book.contacto(con_nombres, con_cumpleanos, con_email, usu_id, con_codigo)
-select concat(first_name, ' ', last_name), birth_date, 
-	lower(concat(first_name, '.', last_name, 
-		FLOOR(1000 + (RAND() * 8999)),
-		SUBSTRING_INDEX(SUBSTRING_INDEX(@domains_list, ',', 1 + FLOOR(RAND() * @num_domains)), ',', -1)
-    )),
-   (
-        SELECT u.usu_id
-        FROM `address_book`.usuario u
-        ORDER BY RAND()
-        LIMIT 1
-    ),
-	upper(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 12))
-from employees;
+## Ejecutar
+
+```sh
+mvn spring-boot:run
 ```
 
-El actual backup de la base de datos ya lleva los passwords asegurados, inicialmente fueron creados con la siguiente query:
+La aplicación queda en `http://localhost:8080/`.
+
+Usuarios por defecto:
+
+- `admin` / `4dm1n` (rol ADMIN)
+- `cesardl` / `123456` (rol USER)
+
+## Build y pruebas
+
+```sh
+mvn -B verify
+```
+
+Las pruebas unitarias (hashing de passwords, encoder, capa web con MockMvc) corren siempre.
+Las pruebas de integración de la capa de persistencia usan **Testcontainers (MySQL 8)** y se
+omiten automáticamente si Docker no está disponible.
+
+## Nota sobre passwords y MySQL 8
+
+MySQL 8 **eliminó la función `PASSWORD()`**. Los hashes ya almacenados en
+`data/address_book_schema.sql` son literales con el formato `*SHA1(SHA1(pwd))`, así que el dump
+carga sin problemas. Para insertar usuarios nuevos, calcula el hash en la aplicación
+(`Utilities.buildMySQLPassword`) o usa valores literales, por ejemplo:
 
 ```sql
-INSERT INTO usuario VALUES (1,'admin', PASSWORD('4dm1n')),(2,'cesardl',PASSWORD('123456'));
+-- *SHA1(SHA1('4dm1n')) y *SHA1(SHA1('123456'))
+INSERT INTO usuario(usu_usuario, usu_password, usu_role) VALUES
+  ('admin',   '*68AB655AF1DDBDB3179671D16EB5B698564AC722', 'ADMIN'),
+  ('cesardl', '*6BB4837EB74329105EE4568DDA7DC67ED2CA2AD9', 'USER');
 ```
