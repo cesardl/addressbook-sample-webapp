@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${titulo} + ' - Address Book')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container" style="max-width: 720px;">
+    <h1 class="h3 mb-4" th:text="${titulo}">Contacto</h1>
+
+    <form th:action="@{/contactos}" th:object="${contacto}" method="post" enctype="multipart/form-data">
+        <input type="hidden" th:field="*{conId}">
+
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label" for="conCodigo">Código</label>
+                <input type="text" id="conCodigo" class="form-control" th:field="*{conCodigo}" readonly>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('conCodigo')}"
+                     th:errors="*{conCodigo}"></div>
+            </div>
+            <div class="col-md-9">
+                <label class="form-label" for="conNombres">Nombres</label>
+                <input type="text" id="conNombres" class="form-control" th:field="*{conNombres}"
+                       th:classappend="${#fields.hasErrors('conNombres')} ? 'is-invalid'">
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('conNombres')}"
+                     th:errors="*{conNombres}"></div>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label" for="conTelefono">Teléfono</label>
+                <input type="text" id="conTelefono" class="form-control" th:field="*{conTelefono}"
+                       th:classappend="${#fields.hasErrors('conTelefono')} ? 'is-invalid'">
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('conTelefono')}"
+                     th:errors="*{conTelefono}"></div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="conEmail">Email</label>
+                <input type="email" id="conEmail" class="form-control" th:field="*{conEmail}"
+                       th:classappend="${#fields.hasErrors('conEmail')} ? 'is-invalid'">
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('conEmail')}"
+                     th:errors="*{conEmail}"></div>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label" for="conCumpleanos">Cumpleaños</label>
+                <input type="date" id="conCumpleanos" class="form-control" th:field="*{conCumpleanos}">
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label" for="avatarFile">Avatar</label>
+                <input type="file" id="avatarFile" name="avatarFile" class="form-control" accept="image/*">
+                <div class="form-check mt-2" th:if="*{conId} != 0">
+                    <input class="form-check-input" type="checkbox" id="quitarAvatar" name="quitarAvatar" value="true">
+                    <label class="form-check-label" for="quitarAvatar">Quitar avatar actual</label>
+                </div>
+            </div>
+
+            <div class="col-12" th:if="*{conId} != 0">
+                <label class="form-label d-block">Avatar actual</label>
+                <img th:src="@{'/contactos/' + *{conId} + '/avatar'}" alt="avatar"
+                     class="avatar-preview rounded border">
+            </div>
+        </div>
+
+        <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a th:href="@{/contactos}" class="btn btn-outline-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>
