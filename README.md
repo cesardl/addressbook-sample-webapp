@@ -42,11 +42,61 @@ Cargar el esquema y los datos de ejemplo:
 docker exec -i mysql-v8 mysql -uroot -prootroot address_book < data/address_book_schema.sql
 ```
 
-El dataset de ejemplo tiene ~30k contactos (tomados de la base de datos de ejemplo _Employees_),
-por lo que el listado usa paginación del lado servidor de DataTables para responder de forma ágil.
+El backup incluido (`data/address_book_schema.sql`) trae ~30 contactos de ejemplo, con sus
+imágenes almacenadas como BLOB. Se generó con:
+
+```sh
+mysqldump -u root -p -B --hex-blob --routines address_book > address_book_schema.sql
+```
+
+(`-B --hex-blob` es necesario para exportar correctamente los avatares almacenados en la base de
+datos, y `--routines` incluye las funciones/procedimientos almacenados.)
 
 La conexión por defecto (`localhost:3310/address_book`, usuario `root`) se configura en
 `src/main/resources/application.yml`.
+
+### Generar un dataset grande (~30k contactos)
+
+Para reproducir el escenario de performance que motivó la paginación del lado servidor de
+DataTables, aproveché la base de datos de ejemplo **_Employees_** e inserté cerca de 30k
+registros como contactos.
+
+Primero, los usuarios a partir de otra tabla de ejemplo:
+
+```sql
+insert into address_book.usuario(usu_usuario, usu_password)
+select p.`name`, PASSWORD(p.`name`) from crud.tbl_person p;
+```
+
+Luego, los contactos con emails y códigos aleatorios desde el schema _Employees_:
+
+```sql
+SET @random_chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+SET @char_length = LENGTH(@random_chars);
+
+-- Configuration for random domains
+SET @domains_list = '@latin.com,@llajoo.com,@email.com,@correito.com.ar,@employees.dev,@correo.com.mx';
+SET @num_domains = 6;
+
+insert into address_book.contacto(con_nombres, con_cumpleanos, con_email, usu_id, con_codigo)
+select concat(first_name, ' ', last_name), birth_date,
+	lower(concat(first_name, '.', last_name,
+		FLOOR(1000 + (RAND() * 8999)),
+		SUBSTRING_INDEX(SUBSTRING_INDEX(@domains_list, ',', 1 + FLOOR(RAND() * @num_domains)), ',', -1)
+    )),
+   (
+        SELECT u.usu_id
+        FROM `address_book`.usuario u
+        ORDER BY RAND()
+        LIMIT 1
+    ),
+	upper(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 12))
+from employees;
+```
+
+> **MySQL 8**: la función `PASSWORD()` fue eliminada. El query de usuarios anterior es histórico
+> (se ejecutó en MySQL 5.x); en MySQL 8 usa `Utilities.buildMySQLPassword` o valores literales
+> `*HASH` (ver la sección siguiente).
 
 ## Ejecutar
 
